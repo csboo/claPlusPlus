@@ -116,15 +116,15 @@ Args handle_args(const int& argc, const char* argv[]) {
             args.Output = argvec.at(i + 1);
             i++;
         } else if (argvec.at(i) == "--charset" || argvec.at(i) == "-c") {
-            true_or_throw(i <= argvec.size(), "Missing argument!\n");
+            true_or_throw(i < argvec.size() - 1, "Missing argument!\n");
             args.Charset = argvec.at(i + 1);
             i++;
         } else if (argvec.at(i) == "--lenght" || argvec.at(i) == "-l") {
-            true_or_throw(i <= argvec.size(), "Missing argument!\n");
+            true_or_throw(i < argvec.size() - 1, "Missing argument!\n");
             args.Length = stoi(argvec.at(i + 1));
             i++;
         } else if (argvec.at(i) == "--static" || argvec.at(i) == "-s") {
-            true_or_throw(i <= argvec.size(), "Missing argument!\n");
+            true_or_throw(i < argvec.size() - 1, "Missing argument!\n");
             args.Static = argvec.at(i + 1);
             i++;
         }
