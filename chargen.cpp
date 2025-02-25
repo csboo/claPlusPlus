@@ -10,11 +10,11 @@ struct Args {
     std::string Output;
     std::string Charset;
     std::string Static;
-    int Lenght;
+    int Length;
 };
 
 void generateWords(std::queue<char>& charset, const int& len, const std::string& Static);
-void true_or(const bool& arg, const std::string& error);
+void true_or_throw(const bool& arg, const char* error);
 Args handle_args(const int& argc, const char* argv[]);
 
 static std::string indent(const int& n);
@@ -29,16 +29,7 @@ int main(const int argc, const char* argv[]) {
         std::queue<char> charset_queue;
         std::for_each(charset.begin(), charset.end(), [&charset_queue](const char& c) { charset_queue.push(c); });
 
-        // while (!cig.empty()) {
-        //  // std::cout << cig.front() << ' ';
-        //  // cig.pop();
-        // }
-        // std::cout << '\n';
-
-        int len = args.Lenght;
-        std::string append = args.Static;
-
-        generateWords(charset_queue, len, append);
+        generateWords(charset_queue,args.Length,args.Static);
 
         f.close();
     } catch (char const* err) {
@@ -121,19 +112,19 @@ Args handle_args(const int& argc, const char* argv[]) {
                          "\n\nWARNING: use all args, or things will break!\n\n";
             exit(0);
         } else if (argvec.at(i) == "--output" || argvec.at(i) == "-o") {
-            true_or(i <= argvec.size(), "Missing argument!\n");
+            true_or_throw(i < argvec.size() - 1, "Missing argument!\n");
             args.Output = argvec.at(i + 1);
             i++;
         } else if (argvec.at(i) == "--charset" || argvec.at(i) == "-c") {
-            true_or(i <= argvec.size(), "Missing argument!\n");
+            true_or_throw(i <= argvec.size(), "Missing argument!\n");
             args.Charset = argvec.at(i + 1);
             i++;
         } else if (argvec.at(i) == "--lenght" || argvec.at(i) == "-l") {
-            true_or(i <= argvec.size(), "Missing argument!\n");
-            args.Lenght = stoi(argvec.at(i + 1));
+            true_or_throw(i <= argvec.size(), "Missing argument!\n");
+            args.Length = stoi(argvec.at(i + 1));
             i++;
         } else if (argvec.at(i) == "--static" || argvec.at(i) == "-s") {
-            true_or(i <= argvec.size(), "Missing argument!\n");
+            true_or_throw(i <= argvec.size(), "Missing argument!\n");
             args.Static = argvec.at(i + 1);
             i++;
         }
@@ -142,7 +133,7 @@ Args handle_args(const int& argc, const char* argv[]) {
     return args;
 }
 
-void true_or(const bool& arg, const std::string& error) {
+void true_or_throw(const bool& arg, const char* error) {
     if (!arg) {
         throw error;
     }
