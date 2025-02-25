@@ -49,8 +49,7 @@ void generateWords(std::queue<char>& charset, const int& len, const std::string&
     const int n = static_cast<int>(chars.size());
     std::cout << len << " " << n << "\n";
     if (len > n || len <= 0) {
-        std::cerr << "Invalid length\n";
-        return;
+        throw "Invalid length\n";
     }
 
     // Create an indices vector for the first combination [0, 1, ..., len-1]
