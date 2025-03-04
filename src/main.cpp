@@ -10,12 +10,12 @@ struct Args {
     std::string Output;
     std::string Charset;
     std::string Static;
-    int Length;
+    int Length{};
 };
 
-void generateWords(std::queue<char>& charset, const int& len, const std::string& Static);
-void true_or_throw(const bool& arg, const char* error);
-Args handle_args(const int& argc, const char* argv[]);
+static void generateWords(std::queue<char>& charset, const int& len, const std::string& Static);
+static void true_or_throw(const bool& arg, const char* error);
+static Args handle_args(const int& argc, const char* argv[]);
 
 static std::string indent(const int& n);
 
