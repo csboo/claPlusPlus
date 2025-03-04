@@ -2,3 +2,4 @@ chargen
 GIT_NOTNEEDED
 .cache
 test/
+*.bak
