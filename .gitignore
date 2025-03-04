@@ -1,2 +1,4 @@
 chargen
 GIT_NOTNEEDED
+.cache
+test/
