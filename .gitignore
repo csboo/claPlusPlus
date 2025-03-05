@@ -3,3 +3,4 @@ GIT_NOTNEEDED
 .cache
 test/
 *.bak
+*old*
