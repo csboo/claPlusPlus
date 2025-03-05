@@ -1,8 +1,8 @@
 #pragma once
 #include "Arg.hpp"
-#include <vector>
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 class ClapParser {
 public:
@@ -40,7 +40,9 @@ private:
 template<typename T>
 T ClapParser::get(const std::string& name) const {
     auto it = values_.find(name);
-    if (it == values_.end()) throw std::runtime_error("Argument not found: " + name);
+    if (it == values_.end()) {
+        throw std::runtime_error("Argument not found: " + name);
+    }
     try {
         return std::any_cast<T>(it->second);
     } catch (const std::bad_any_cast&) {

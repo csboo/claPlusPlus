@@ -61,7 +61,7 @@ void ClapParser::check_required_args() {
 size_t ClapParser::handle_long_option(const std::string& token, const std::vector<std::string>& args, size_t i) {
     std::string opt_name = token.substr(2);
     const Arg* arg = find_option(opt_name);
-    if (!arg) {
+    if (arg == nullptr) {
         throw std::runtime_error("Unknown option: " + token);
     }
 
@@ -77,7 +77,7 @@ size_t ClapParser::handle_long_option(const std::string& token, const std::vecto
 size_t ClapParser::handle_short_option(const std::string& token, const std::vector<std::string>& args, size_t i) {
     std::string opt_name = token.substr(1);
     const Arg* arg = find_option(opt_name);
-    if (!arg) {
+    if (arg == nullptr) {
         throw std::runtime_error("Unknown option: " + token);
     }
 
@@ -95,7 +95,8 @@ size_t ClapParser::handle_option_with_value(const Arg* arg, const std::vector<st
         // Use next argument as value
         values_[arg->name()] = arg->convert(args[i + 1]);
         return i + 1; // Skip the value in the next iteration
-    } else if (arg->has_default()) {
+    }
+    if (arg->has_default()) {
         // Use default value
         values_[arg->name()] = arg->convert(arg->default_value());
     } else {
@@ -108,7 +109,8 @@ size_t ClapParser::handle_option_with_value(const Arg* arg, const std::vector<st
 void ClapParser::handle_missing_positional(const Arg& arg) {
     if (arg.is_required()) {
         throw std::runtime_error("Missing required positional argument: " + arg.name());
-    } else if (arg.has_default()) {
+    }
+    if (arg.has_default()) {
         values_[arg.name()] = arg.convert(arg.default_value());
     }
 }

@@ -1,6 +1,8 @@
+#include <utility>
+
 #include "include/Arg.hpp"
 
-Arg::Arg(const std::string& name) : name_(name) {
+Arg::Arg(std::string name) : name_(std::move(name)) {
     // Default converter to string
     converter_ = [](const std::string& s) -> std::any { return s; };
 }

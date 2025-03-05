@@ -1,12 +1,12 @@
 #pragma once
-#include <string>
-#include <functional>
 #include <any>
+#include <functional>
 #include <stdexcept>
+#include <string>
 
 class Arg {
 public:
-    explicit Arg(const std::string& name);
+    explicit Arg(std::string name);
     
     Arg& short_name(const std::string& s);
     Arg& long_name(const std::string& l);
@@ -19,15 +19,15 @@ public:
     Arg& type();
 
     // Getters
-    const std::string& name() const;
-    const std::string& short_name() const;
-    const std::string& long_name() const;
-    const std::string& help() const;
-    bool is_required() const;
-    bool takes_value() const;
-    bool has_default() const;
-    const std::string& default_value() const;
-    std::any convert(const std::string& s) const;
+    [[nodiscard]] const std::string& name() const;
+    [[nodiscard]] const std::string& short_name() const;
+    [[nodiscard]] const std::string& long_name() const;
+    [[nodiscard]] const std::string& help() const;
+    [[nodiscard]] bool is_required() const;
+    [[nodiscard]] bool takes_value() const;
+    [[nodiscard]] bool has_default() const;
+    [[nodiscard]] const std::string& default_value() const;
+    [[nodiscard]] std::any convert(const std::string& s) const;
 
 private:
     std::string name_;
