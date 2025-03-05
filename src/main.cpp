@@ -1,9 +1,10 @@
-#include "./clapparser.hpp"
+#include "./include/Parser.hpp"
+#include "include/Arg.hpp"
+#include <iostream>
 
 int main(int argc, char* argv[]) {
     ClapParser parser;
 
-    // parser.add_arg(Arg("Numbers").);
     parser.add_arg(Arg("input")
                        .short_name("i")
                        .required(true)
