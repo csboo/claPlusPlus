@@ -1,5 +1,5 @@
 project('claplusplus', 'cpp',
-  version : '1.0',
+  version : '0.0.3',
   default_options : [
     'cpp_std=c++23',
     'warning_level=3',
