@@ -1,4 +1,4 @@
-project('APPNAME', 'cpp',
+project('claplusplus', 'cpp',
   version : '1.0',
   default_options : [
     'cpp_std=c++23',
