@@ -90,7 +90,8 @@ size_t ClapParser::handle_short_option(const std::string& token, const std::vect
     return i;
 }
 
-size_t ClapParser::handle_option_with_value(const Arg* arg, const std::vector<std::string>& args, size_t i, const std::string& token) {
+size_t ClapParser::handle_option_with_value(const Arg* arg, const std::vector<std::string>& args, size_t i,
+                                            const std::string& token) {
     if (i + 1 < args.size() && !is_option(args[i + 1])) {
         // Use next argument as value
         values_[arg->name()] = arg->convert(args[i + 1]);
@@ -119,9 +120,7 @@ bool ClapParser::is_option(const std::string& token) {
     return token.substr(0, 2) == "--" || (token[0] == '-' && token.size() > 1);
 }
 
-bool ClapParser::is_long_option(const std::string& token) {
-    return token.substr(0, 2) == "--";
-}
+bool ClapParser::is_long_option(const std::string& token) { return token.substr(0, 2) == "--"; }
 
 bool ClapParser::is_short_option(const std::string& token) {
     return token[0] == '-' && token.size() > 1 && token[1] != '-';

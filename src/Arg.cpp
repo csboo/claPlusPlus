@@ -8,12 +8,30 @@ Arg::Arg(std::string name) : name_(std::move(name)) {
 }
 
 // Setters
-Arg& Arg::short_name(const std::string& s) { short_ = s; return *this; }
-Arg& Arg::long_name(const std::string& l) { long_ = l; return *this; }
-Arg& Arg::help(const std::string& h) { help_ = h; return *this; }
-Arg& Arg::required(bool is_required) { required_ = is_required; return *this; }
-Arg& Arg::takes_value(bool takes) { takes_value_ = takes; return *this; }
-Arg& Arg::default_value(const std::string& default_val) { default_ = default_val; return *this; }
+Arg& Arg::short_name(const std::string& s) {
+    short_ = s;
+    return *this;
+}
+Arg& Arg::long_name(const std::string& l) {
+    long_ = l;
+    return *this;
+}
+Arg& Arg::help(const std::string& h) {
+    help_ = h;
+    return *this;
+}
+Arg& Arg::required(bool is_required) {
+    required_ = is_required;
+    return *this;
+}
+Arg& Arg::takes_value(bool takes) {
+    takes_value_ = takes;
+    return *this;
+}
+Arg& Arg::default_value(const std::string& default_val) {
+    default_ = default_val;
+    return *this;
+}
 
 // Getters
 const std::string& Arg::name() const { return name_; }
