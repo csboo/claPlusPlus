@@ -1,5 +1,6 @@
 #pragma once
 #include "Arg.hpp"
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -10,7 +11,7 @@ class ClapParser {
     void parse(int argc, char* argv[]);
     void print_help() const;
 
-    template <typename T> T get(const std::string& name) const;
+    template <typename T> std::optional<T> get(const std::string& name) const;
 
   private:
     std::vector<Arg> args_;
@@ -37,10 +38,11 @@ class ClapParser {
     static bool is_short_option(const std::string& token);
 };
 
-template <typename T> T ClapParser::get(const std::string& name) const {
+template <typename T> std::optional<T> ClapParser::get(const std::string& name) const {
     auto it = values_.find(name);
     if (it == values_.end()) {
-        throw std::runtime_error("Argument not found: " + name);
+        // throw std::runtime_error("Argument not found: " + name);
+        return std::nullopt;
     }
     try {
         return std::any_cast<T>(it->second);
