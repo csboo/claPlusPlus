@@ -1,12 +1,24 @@
 #include "include/Parser.hpp"
+#include <cstdlib>
 #include <iostream>
+#include <unordered_set>
 
 void ClapParser::parse(int argc, char* argv[]) {
-    program_name_ = argc > 0 ? argv[0] : "";
+    program_name_ = argv[0];
     std::vector<std::string> args(argv + 1, argv + argc);
+    std::unordered_set<std::string> args_with_values;
 
     parse_options(args);
     parse_positional_args(args);
+
+    // Validate all arguments that need values received them
+    for (const auto& arg : args_) {
+        if (arg.takes_value() && args_with_values.count(arg.name()) == 0) {
+            if (arg.is_required() && !arg.has_default()) {
+                throw std::runtime_error("Argument '" + arg.name() + "' requires a value");
+            }
+        }
+    }
 
     check_required_args();
     apply_defaults();
@@ -53,13 +65,17 @@ void ClapParser::parse_positional_args(const std::vector<std::string>& args) {
 void ClapParser::check_required_args() {
     for (const auto& arg : args_) {
         if (arg.is_required() && values_.find(arg.name()) == values_.end()) {
-            throw std::runtime_error("Missing required argument: " + arg.name());
+            throw std::runtime_error("missing required argument: " + arg.name());
         }
     }
 }
 
 size_t ClapParser::handle_long_option(const std::string& token, const std::vector<std::string>& args, size_t i) {
     std::string opt_name = token.substr(2);
+    if (opt_name == "help") {
+        print_help();
+        exit(0);
+    }
     const Arg* arg = find_option(opt_name);
     if (arg == nullptr) {
         throw std::runtime_error("Unknown option: " + token);
@@ -76,6 +92,10 @@ size_t ClapParser::handle_long_option(const std::string& token, const std::vecto
 
 size_t ClapParser::handle_short_option(const std::string& token, const std::vector<std::string>& args, size_t i) {
     std::string opt_name = token.substr(1);
+    if (opt_name == "h") {
+        print_help();
+        exit(0);
+    }
     const Arg* arg = find_option(opt_name);
     if (arg == nullptr) {
         throw std::runtime_error("Unknown option: " + token);
@@ -116,15 +136,15 @@ void ClapParser::handle_missing_positional(const Arg& arg) {
     }
 }
 
-bool ClapParser::is_option(const std::string& token) {
-    return token.substr(0, 2) == "--" || (token[0] == '-' && token.size() > 1);
-}
-
-bool ClapParser::is_long_option(const std::string& token) { return token.substr(0, 2) == "--"; }
-
-bool ClapParser::is_short_option(const std::string& token) {
-    return token[0] == '-' && token.size() > 1 && token[1] != '-';
-}
+  inline bool ClapParser::is_option(const std::string& token) const {
+      return token.substr(0, 2) == "--" || (token[0] == '-' && token.size() > 1);
+  }
+  
+  inline bool ClapParser::is_long_option(const std::string& token) const { return token.substr(0, 2) == "--"; }
+  
+  inline bool ClapParser::is_short_option(const std::string& token) const {
+      return token[0] == '-' && token.size() > 1 && token[1] != '-';
+  }
 
 void ClapParser::print_help() const {
     std::cout << "Usage: " << program_name_ << " [OPTIONS]";
@@ -152,6 +172,11 @@ void ClapParser::print_help() const {
             std::cout << "\n";
         }
     }
+    std::cout << "  ";
+    std::cout << "-h" << ", ";
+    std::cout << "--help";
+    std::cout << "\t" << "Prints this help message";
+    std::cout << "\n";
 
     if (!positionals.empty()) {
         std::cout << "\nPositional arguments:\n";
@@ -191,3 +216,5 @@ void ClapParser::apply_defaults() {
         }
     }
 }
+
+bool ClapParser::has(const std::string& name) const { return values_.find(name) != values_.end(); }

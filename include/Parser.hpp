@@ -1,6 +1,7 @@
 #pragma once
 #include "Arg.hpp"
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -11,7 +12,8 @@ class ClapParser {
     void parse(int argc, char* argv[]);
     void print_help() const;
 
-    template <typename T> std::optional<T> get(const std::string& name) const;
+    template <typename T> std::optional<T> get_one_as(const std::string& name) const;
+    bool has(const std::string& name) const;
 
   private:
     std::vector<Arg> args_;
@@ -19,6 +21,9 @@ class ClapParser {
     std::string program_name_;
 
     // Helper methods
+    inline bool is_option(const std::string& token) const ;
+    inline bool is_long_option(const std::string& token) const ;
+    inline bool is_short_option(const std::string& token) const ;
     const Arg* find_option(const std::string& name) const;
     std::vector<Arg> get_positional_args() const;
     void apply_defaults();
@@ -33,20 +38,13 @@ class ClapParser {
     size_t handle_option_with_value(const Arg* arg, const std::vector<std::string>& args, size_t i,
                                     const std::string& token);
 
-    static bool is_option(const std::string& token);
-    static bool is_long_option(const std::string& token);
-    static bool is_short_option(const std::string& token);
 };
 
-template <typename T> std::optional<T> ClapParser::get(const std::string& name) const {
+template <typename T> std::optional<T> ClapParser::get_one_as(const std::string& name) const {
     auto it = values_.find(name);
     if (it == values_.end()) {
         // throw std::runtime_error("Argument not found: " + name);
         return std::nullopt;
     }
-    try {
-        return std::any_cast<T>(it->second);
-    } catch (const std::bad_any_cast&) {
-        throw std::runtime_error("Type mismatch for argument: " + name);
-    }
+    return std::any_cast<T>(it->second);
 }

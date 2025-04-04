@@ -2,7 +2,7 @@
 
 #include "include/Arg.hpp"
 
-Arg::Arg(std::string name) : name_(std::move(name)) {
+Arg::Arg(std::string name) : name_(std::move(name)), long_(name_), required_(false), takes_value_(true) {
     // Default converter to string
     converter_ = [](const std::string& s) -> std::any { return s; };
 }
@@ -10,10 +10,6 @@ Arg::Arg(std::string name) : name_(std::move(name)) {
 // Setters
 Arg& Arg::short_name(const std::string& s) {
     short_ = s;
-    return *this;
-}
-Arg& Arg::long_name(const std::string& l) {
-    long_ = l;
     return *this;
 }
 Arg& Arg::help(const std::string& h) {
@@ -32,6 +28,7 @@ Arg& Arg::default_value(const std::string& default_val) {
     default_ = default_val;
     return *this;
 }
+bool Arg::requires_value() const { return takes_value_; }
 
 // Getters
 const std::string& Arg::name() const { return name_; }
