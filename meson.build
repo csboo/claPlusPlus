@@ -30,7 +30,7 @@ install_headers(
   subdir: 'claplusplus')
 
 executable('app',
-  sources : 'src/main.cpp',
+  sources : 'src/old_main.cpp',
   include_directories: include_dir,
   link_with: claplusplus_lib,
   install : false)
