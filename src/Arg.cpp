@@ -1,6 +1,6 @@
 #include <utility>
 
-#include "include/Arg.hpp"
+#include "../include/Arg.hpp"
 
 Arg::Arg(std::string name) : name_(std::move(name)), long_(name_), required_(false), takes_value_(true) {
     // Default converter to string
@@ -39,4 +39,4 @@ bool Arg::is_required() const { return required_; }
 bool Arg::takes_value() const { return takes_value_; }
 bool Arg::has_default() const { return !default_.empty(); }
 const std::string& Arg::default_value() const { return default_; }
-std::any Arg::convert(const std::string& s) const { return converter_(s); }
+std::string Arg::convert(const std::string& s) const { return std::string(s); }

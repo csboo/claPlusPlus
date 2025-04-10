@@ -23,7 +23,7 @@ class Arg {
     [[nodiscard]] bool takes_value() const;
     [[nodiscard]] bool has_default() const;
     [[nodiscard]] const std::string& default_value() const;
-    [[nodiscard]] std::any convert(const std::string& s) const;
+    [[nodiscard]] std::string convert(const std::string& s) const;
     [[nodiscard]] bool requires_value() const;
 
   private:

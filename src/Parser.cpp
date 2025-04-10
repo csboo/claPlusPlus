@@ -98,7 +98,7 @@ size_t ClapParser::handle_short_option(const std::string& token, const std::vect
     }
     const Arg* arg = find_option(opt_name);
     if (arg == nullptr) {
-        throw std::runtime_error("Unknown option: " + token);
+        throw std::runtime_error("unknown option: " + token);
     }
 
     if (arg->takes_value()) {
@@ -212,7 +212,7 @@ std::vector<Arg> ClapParser::get_positional_args() const {
 void ClapParser::apply_defaults() {
     for (const auto& arg : args_) {
         if (values_.find(arg.name()) == values_.end() && arg.has_default()) {
-            values_[arg.name()] = arg.convert(arg.default_value());
+            values_[arg.name()] = std::string(arg.default_value());
         }
     }
 }

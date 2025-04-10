@@ -1,6 +1,8 @@
 #pragma once
 #include "Arg.hpp"
+#include <iostream>
 #include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -17,7 +19,7 @@ class ClapParser {
 
   private:
     std::vector<Arg> args_;
-    std::unordered_map<std::string, std::any> values_;
+    std::unordered_map<std::string, std::string> values_;
     std::string program_name_;
 
     // Helper methods
@@ -46,5 +48,9 @@ template <typename T> std::optional<T> ClapParser::get_one_as(const std::string&
         // throw std::runtime_error("Argument not found: " + name);
         return std::nullopt;
     }
-    return std::any_cast<T>(it->second);
+
+    T value;
+    std::istringstream(it->second) >> value;
+    return value;
+    // return std::any_cast<T>(it->second);
 }
