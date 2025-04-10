@@ -7,7 +7,8 @@ project('claplusplus', 'cpp',
     'optimization=g',
     'debug=true',
     'b_ndebug=if-release'
-  ])
+  ]
+)
 
 # Include directory
 include_dir = include_directories('include')
@@ -15,22 +16,26 @@ include_dir = include_directories('include')
 # Library
 source_dir = files(
   'src/Arg.cpp',
-  'src/Parser.cpp'
+  'src/Parser.cpp',
+  'src/utils.cpp'
 )
 
 claplusplus_lib = static_library('claplusplus',
   sources: source_dir,
   include_directories: include_dir,
-  install: true)
+  install: true
+)
  
 # Install headers
 install_headers(
   'include/Arg.hpp',
   'include/Parser.hpp',
-  subdir: 'claplusplus')
+  subdir: 'claplusplus'
+)
 
 executable('app',
   sources : 'src/old_main.cpp',
   include_directories: include_dir,
   link_with: claplusplus_lib,
-  install : false)
+  install : false
+)
