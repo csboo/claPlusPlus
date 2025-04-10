@@ -9,7 +9,7 @@ void ClapParser::parse(int argc, char* argv[]) {
     std::unordered_set<std::string> args_with_values;
 
     parse_options(args);
-    parse_positional_args(args);
+    // parse_positional_args(args);
 
     // Validate all arguments that need values received them
     for (const auto& arg : args_) {
@@ -41,26 +41,26 @@ void ClapParser::parse_options(const std::vector<std::string>& args) {
     }
 }
 
-void ClapParser::parse_positional_args(const std::vector<std::string>& args) {
-    std::vector<std::string> positional_args;
+// void ClapParser::parse_positional_args(const std::vector<std::string>& args) {
+//     std::vector<std::string> positional_args;
 
-    // Collect positional arguments (tokens not starting with '-')
-    for (const auto& token : args) {
-        if (!is_option(token)) {
-            positional_args.push_back(token);
-        }
-    }
+//     // Collect positional arguments (tokens not starting with '-')
+//     for (const auto& token : args) {
+//         if (!is_option(token)) {
+//             positional_args.push_back(token);
+//         }
+//     }
 
-    // Assign positional arguments to their respective slots
-    auto positional_specs = get_positional_args();
-    for (size_t j = 0; j < positional_specs.size(); ++j) {
-        if (j < positional_args.size()) {
-            values_[positional_specs[j].name()] = positional_specs[j].convert(positional_args[j]);
-        } else {
-            handle_missing_positional(positional_specs[j]);
-        }
-    }
-}
+//     // Assign positional arguments to their respective slots
+//     auto positional_specs = get_positional_args();
+//     for (size_t j = 0; j < positional_specs.size(); ++j) {
+//         if (j < positional_args.size()) {
+//             values_[positional_specs[j].name()] = positional_specs[j].convert(positional_args[j]);
+//         } else {
+//             handle_missing_positional(positional_specs[j]);
+//         }
+//     }
+// }
 
 void ClapParser::check_required_args() {
     for (const auto& arg : args_) {
