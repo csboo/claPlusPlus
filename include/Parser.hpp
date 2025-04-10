@@ -45,7 +45,6 @@ class ClapParser {
 template <typename T> std::optional<T> ClapParser::get_one_as(const std::string& name) const {
     auto it = values_.find(name);
     if (it == values_.end()) {
-        // throw std::runtime_error("Argument not found: " + name);
         return std::nullopt;
     }
 
