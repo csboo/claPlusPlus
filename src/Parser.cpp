@@ -1,6 +1,7 @@
 #include "../include/Parser.hpp"
 #include <cstdlib>
 #include <iostream>
+#include <string>
 #include <unordered_set>
 
 void ClapParser::parse(int argc, char* argv[]) {
@@ -114,12 +115,12 @@ size_t ClapParser::handle_option_with_value(const Arg* arg, const std::vector<st
                                             const std::string& token) {
     if (i + 1 < args.size() && !is_option(args[i + 1])) {
         // Use next argument as value
-        values_[arg->name()] = arg->convert(args[i + 1]);
+        values_[arg->name()] = std::string(args[i + 1]);
         return i + 1; // Skip the value in the next iteration
     }
     if (arg->has_default()) {
         // Use default value
-        values_[arg->name()] = arg->convert(arg->default_value());
+        values_[arg->name()] = std::string(arg->default_value());
     } else {
         throw std::runtime_error("Option '" + token + "' requires a value but none was provided");
     }
@@ -132,7 +133,7 @@ void ClapParser::handle_missing_positional(const Arg& arg) {
         throw std::runtime_error("Missing required positional argument: " + arg.name());
     }
     if (arg.has_default()) {
-        values_[arg.name()] = arg.convert(arg.default_value());
+        values_[arg.name()] = std::string(arg.default_value());
     }
 }
 

@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <string>
 
@@ -23,7 +22,6 @@ class Arg {
     [[nodiscard]] bool takes_value() const;
     [[nodiscard]] bool has_default() const;
     [[nodiscard]] const std::string& default_value() const;
-    [[nodiscard]] std::string convert(const std::string& s) const;
     [[nodiscard]] bool requires_value() const;
 
   private:
@@ -34,5 +32,5 @@ class Arg {
     bool required_;
     bool takes_value_;
     std::string default_;
-    std::function<std::any(const std::string&)> converter_;
+    std::optional<std::string> value_;
 };
