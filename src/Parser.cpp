@@ -179,22 +179,19 @@ void ClapParser::print_help() const {
     std::cout << "\n\nOptions:\n";
 
     for (const auto& arg : args_) {
-        if (!arg.short_name().empty()) {
-            std::cout << "  ";
-            std::cout << "-" << arg.short_name() << ", ";
-            std::cout << "--" << arg.long_name();
-            std::cout << "\t" << arg.help();
-            if (arg.has_default())
-                std::cout << " (default: " << arg.default_value() << ")";
-            std::cout << "\n";
-        } else {
-            std::cout << "      ";
-            std::cout << "--" << arg.long_name();
-            std::cout << "\t" << arg.help();
-            if (arg.has_default())
-                std::cout << " (default: " << arg.default_value() << ")";
-            std::cout << "\n";
+        arg.short_name().empty()? std::cout << "      " : std::cout << "  -" << arg.short_name() << ", "; 
+        std::cout << "--" << arg.long_name();
+        std::cout << "\t" << arg.help();
+        if (arg.has_default()) {
+            std::cout << " (default: " << arg.default_value() << ")";
         }
+        if (arg.has_env()) {
+            std::cout << " [env: " << arg.env_name_ << "]";
+        }
+        if (arg.try_env_) {
+            std::cout << " [def.env: " << arg.try_env_name_ << "]";
+        }
+        std::cout << "\n";
     }
     std::cout << "  ";
     std::cout << "-h" << ", ";
