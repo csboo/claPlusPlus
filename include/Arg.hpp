@@ -1,5 +1,9 @@
 #pragma once
+#include <ostream>
+#include <iostream>
+#include <complex>
 #include <functional>
+#include <optional>
 #include <string>
 
 class ClapParser;
@@ -22,6 +26,8 @@ class Arg {
     [[nodiscard]] const std::string& default_value() const;
     [[nodiscard]] bool is_required() const;
     [[nodiscard]] bool requires_value() const;
+
+    friend std::ostream& operator<<(std::ostream& os, const Arg& arg);
 
   private:
     friend class ClapParser;

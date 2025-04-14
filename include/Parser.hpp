@@ -17,6 +17,7 @@ class ClapParser {
     template <typename T> std::optional<T> get_one_as(const std::string& name) const;
     bool has(const std::string& name) const;
 
+    friend std::ostream& operator<<(std::ostream& os, const ClapParser& parser);
   private:
     std::vector<Arg> args_;
     std::unordered_map<std::string, std::string> values_;

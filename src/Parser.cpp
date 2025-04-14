@@ -1,5 +1,8 @@
 #include "../include/Parser.hpp"
+#include "Arg.hpp"
+#include <cctype>
 #include <cstdlib>
+#include <ios>
 #include <iostream>
 #include <string>
 #include <unordered_set>
@@ -219,3 +222,23 @@ void ClapParser::apply_defaults() {
 }
 
 bool ClapParser::has(const std::string& name) const { return values_.find(name) != values_.end(); }
+
+std::ostream& operator<<(std::ostream& os, const ClapParser& parser) {
+    os << "ClapParser {\n";
+    os << "  program_name: \"" << parser.program_name_ << "\",\n";
+
+    os << "  args: [\n";
+    for (const auto& arg : parser.args_) {
+        os << "    " << arg << ",\n";
+    }
+    os << "  ],\n";
+
+    os << "  values: {\n";
+    for (const auto& [key, val] : parser.values_) {
+        os << "    \"" << key << "\": \"" << val << "\",\n";
+    }
+    os << "  }\n";
+
+    os << "}";
+    return os;
+}
