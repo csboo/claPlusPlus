@@ -21,7 +21,7 @@ void ClapParser::parse(int argc, char* argv[]) {
     for (const auto& arg : args_) {
         if (arg.takes_value() && args_with_values.count(arg.name()) == 0) {
             if (arg.is_required() && !arg.has_default()) {
-                throw std::runtime_error("Argument '" + arg.name() + "' requires a value");
+                throw std::runtime_error("argument '" + arg.name() + "' requires a value");
             }
         }
     }
@@ -102,7 +102,7 @@ size_t ClapParser::handle_long_option(const std::string& token, const std::vecto
     }
     const Arg* arg = find_option(opt_name);
     if (arg == nullptr) {
-        throw std::runtime_error("Unknown option: " + token);
+        throw std::runtime_error("unknown option: " + token);
     }
 
     if (arg->takes_value()) {
@@ -145,7 +145,7 @@ size_t ClapParser::handle_option_with_value(const Arg* arg, const std::vector<st
         // Use default value
         values_[arg->name()] = std::string(arg->default_value());
     } else {
-        throw std::runtime_error("Option '" + token + "' requires a value but none was provided");
+        throw std::runtime_error("option '" + token + "' requires a value but none was provided");
     }
 
     return i;
@@ -153,7 +153,7 @@ size_t ClapParser::handle_option_with_value(const Arg* arg, const std::vector<st
 
 void ClapParser::handle_missing_positional(const Arg& arg) {
     if (arg.is_required()) {
-        throw std::runtime_error("Missing required positional argument: " + arg.name());
+        throw std::runtime_error("missing required positional argument: " + arg.name());
     }
     if (arg.has_default()) {
         values_[arg.name()] = std::string(arg.default_value());
