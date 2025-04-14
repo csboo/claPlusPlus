@@ -34,6 +34,7 @@ class ClapParser {
     void parse_options(const std::vector<std::string>& args);
     void parse_positional_args(const std::vector<std::string>& args);
     void check_required_args();
+    void check_env();
     void handle_missing_positional(const Arg& arg);
 
     size_t handle_long_option(const std::string& token, const std::vector<std::string>& args, size_t i);

@@ -18,6 +18,7 @@ class Arg {
     Arg& required(bool is_required);
     Arg& takes_value(bool takes);
     Arg& default_value(const std::string& default_val);
+    Arg& from_env(const char* env_var_name);
 
     // Getters
     [[nodiscard]] const std::string& short_name() const;
@@ -38,6 +39,8 @@ class Arg {
     std::string help_;
     bool required_;
     bool takes_value_;
+    bool has_env_;
+    std::string env_name_;
     std::string default_;
     std::optional<std::string> value_;
 

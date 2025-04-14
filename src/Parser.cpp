@@ -12,6 +12,8 @@ void ClapParser::parse(int argc, char* argv[]) {
     std::vector<std::string> args(argv + 1, argv + argc);
     std::unordered_set<std::string> args_with_values;
 
+    apply_defaults();
+    check_env();
     parse_options(args);
     // parse_positional_args(args);
 
@@ -25,7 +27,6 @@ void ClapParser::parse(int argc, char* argv[]) {
     }
 
     check_required_args();
-    apply_defaults();
 }
 
 void ClapParser::add_arg(const Arg& arg) { args_.push_back(arg); }
@@ -44,6 +45,14 @@ void ClapParser::parse_options(const std::vector<std::string>& args) {
         }
     }
 }
+
+void ClapParser::check_env() {
+    for (auto& arg : args_) {
+        if (arg.has_env() && arg.value_.has_value()) {
+            values_[arg.name()] = arg.value_.value();
+        }
+    }
+};
 
 // void ClapParser::parse_positional_args(const std::vector<std::string>& args) {
 //     std::vector<std::string> positional_args;
