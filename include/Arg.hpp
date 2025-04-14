@@ -19,6 +19,8 @@ class Arg {
     Arg& takes_value(bool takes);
     Arg& default_value(const std::string& default_val);
     Arg& from_env(const char* env_var_name);
+    Arg& try_env();
+    void set_try_env_name(const std::string& s);
 
     // Getters
     [[nodiscard]] const std::string& short_name() const;
@@ -41,6 +43,8 @@ class Arg {
     bool takes_value_;
     bool has_env_;
     std::string env_name_;
+    bool try_env_;
+    std::string try_env_name_;
     std::string default_;
     std::optional<std::string> value_;
 
