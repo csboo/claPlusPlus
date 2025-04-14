@@ -2,6 +2,8 @@
 #include <functional>
 #include <string>
 
+class ClapParser;
+
 class Arg {
   public:
     explicit Arg(std::string name);
@@ -14,17 +16,16 @@ class Arg {
     Arg& default_value(const std::string& default_val);
 
     // Getters
-    [[nodiscard]] const std::string& name() const;
     [[nodiscard]] const std::string& short_name() const;
     [[nodiscard]] const std::string& long_name() const;
     [[nodiscard]] const std::string& help() const;
-    [[nodiscard]] bool is_required() const;
-    [[nodiscard]] bool takes_value() const;
-    [[nodiscard]] bool has_default() const;
     [[nodiscard]] const std::string& default_value() const;
+    [[nodiscard]] bool is_required() const;
     [[nodiscard]] bool requires_value() const;
 
   private:
+    friend class ClapParser;
+
     std::string name_;
     std::string short_;
     std::string long_;
@@ -33,4 +34,9 @@ class Arg {
     bool takes_value_;
     std::string default_;
     std::optional<std::string> value_;
+
+    [[nodiscard]] bool has_default() const;
+    [[nodiscard]] bool has_env() const;
+    [[nodiscard]] bool takes_value() const;
+    [[nodiscard]] const std::string& name() const;
 };
