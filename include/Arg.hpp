@@ -10,8 +10,8 @@ class Arg {
   public:
     explicit Arg(std::string name);
 
-    Arg& short_name(const std::string& s);
-    Arg& long_name(const std::string& l);
+    Arg& short_name(const std::string& short_name);
+    Arg& long_name(const std::string& long_name);
     Arg& help(const std::string& help);
     Arg& required(bool is_required);
     Arg& takes_value(bool takes);
