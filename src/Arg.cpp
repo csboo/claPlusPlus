@@ -30,9 +30,7 @@ Arg& Arg::default_value(const std::string& default_value) {
     default_value_ = default_value;
     return *this;
 }
-bool Arg::requires_value() const { return takes_value_; }
 Arg& Arg::from_env(const char* env_var_name) {
-    this->has_env_ = true;
     this->env_name_ = env_var_name;
     // std::string value_from_env = ptr_unwrap_or(std::getenv(env_var_name), concat("value \'", env_var_name, "\' not present in env for: ", this->name_));
     // std::optional<std::string> value_from_env = ptr_unwrap_or(std::getenv(env_var_name), std::nullopt);
@@ -50,17 +48,6 @@ Arg& Arg::try_env() {
     return *this;
 };
 
-// Getters
-const std::string& Arg::name() const { return name_; }
-const std::string& Arg::short_name() const { return short_; }
-const std::string& Arg::long_name() const { return long_; }
-const std::string& Arg::help() const { return help_; }
-bool Arg::is_required() const { return required_; }
-bool Arg::takes_value() const { return takes_value_; }
-bool Arg::has_default() const { return !default_.empty(); }
-bool Arg::has_env() const { return has_env_; }
-const std::string& Arg::default_value() const { return default_; }
-
 std::ostream& operator<<(std::ostream& os, const Arg& arg) {
     os << "Arg {\n"
        << "  name: \"" << arg.name_ << "\",\n"
@@ -77,8 +64,4 @@ std::ostream& operator<<(std::ostream& os, const Arg& arg) {
         os << "std::nullopt";
     os << "\n}";
     return os;
-}
-
-void Arg::set_try_env_name(const std::string& s){
-    this->try_env_name_ = s;
 }
