@@ -8,8 +8,7 @@
 #include <string>
 #include <unordered_set>
 
-void ClapParser::parse(int argc, char* argv[]) {
-    program_name_ = argv[0];
+void ClapParser::parse(const int& argc, char* argv[]) {
     std::vector<std::string> args(argv + 1, argv + argc);
     std::unordered_set<std::string> args_with_values;
 

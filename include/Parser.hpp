@@ -12,7 +12,7 @@
 class ClapParser {
   public:
     void add_arg(const Arg& arg);
-    void parse(int argc, char* argv[]);
+    void parse(const int& argc, char* argv[]);
     void print_help() const;
 
     template <typename T> std::optional<T> get_one_as(const std::string& name) const;
