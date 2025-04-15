@@ -19,7 +19,7 @@ class Arg {
     Arg& takes_value(bool takes);
     Arg& default_value(const std::string& default_val);
     Arg& from_env(const char* env_var_name);
-    Arg& try_env();
+    Arg& auto_env();
 
     friend std::ostream& operator<<(std::ostream& os, const Arg& arg);
 
@@ -33,8 +33,8 @@ class Arg {
     bool is_required_;
     bool takes_value_;
     std::string env_name_;
-    bool try_env_;
-    // std::string try_env_name_;
+    bool auto_env_;
+    // std::string auto_env_name_;
     std::string default_value_;
     std::optional<std::string> value_;
 
@@ -95,16 +95,16 @@ class Arg {
       this->env_name_ = env_name;
     }
 
-    // try_env_
-    [[nodiscard]] inline bool get__try_env() const {
-      return this->try_env_;
+    // auto_env_
+    [[nodiscard]] inline bool get__auto_env() const {
+      return this->auto_env_;
     }
-    inline void set__try_env(const bool& try_env) {
-      this->try_env_ = try_env;
+    inline void set__auto_env(const bool& auto_env) {
+      this->auto_env_ = auto_env;
     }
 
-    // try_env_name_
-    [[nodiscard]] inline const std::string get__try_env_name() const {
+    // auto_env_name_
+    [[nodiscard]] inline const std::string get__auto_env_name() const {
       std::string env_name = PROGRAM_NAME() + '_' + this->get__name();
       std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
       return env_name;

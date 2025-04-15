@@ -13,7 +13,7 @@ Arg::Arg(const std::string& name) :
     is_required_(false),
     takes_value_(true),
     env_name_(""),
-    try_env_(false),
+    auto_env_(false),
     default_value_(""),
     value_(std::nullopt)
 {}
@@ -52,8 +52,8 @@ Arg& Arg::from_env(const char* env_var_name) {
     }
     return *this;    
 };
-Arg& Arg::try_env() {
-    this -> try_env_ = true;
+Arg& Arg::auto_env() {
+    this -> auto_env_ = true;
     return *this;
 };
 
