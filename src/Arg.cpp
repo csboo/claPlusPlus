@@ -64,17 +64,17 @@ const std::string& Arg::default_value() const { return default_; }
 std::ostream& operator<<(std::ostream& os, const Arg& arg) {
     os << "Arg {\n"
        << "  name: \"" << arg.name_ << "\",\n"
-       << "  short: \"" << arg.short_ << "\",\n"
-       << "  long: \"" << arg.long_ << "\",\n"
+       << "  short: \"" << arg.short_name_ << "\",\n"
+       << "  long: \"" << arg.long_name_ << "\",\n"
        << "  help: \"" << arg.help_ << "\",\n"
-       << "  required: " << std::boolalpha << arg.required_ << ",\n"
+       << "  required: " << std::boolalpha << arg.is_required_ << ",\n"
        << "  takes_value: " << std::boolalpha << arg.takes_value_ << ",\n"
-       << "  default: \"" << arg.default_ << "\",\n"
+       << "  default: \"" << arg.default_value_ << "\",\n"
        << "  value: ";
     if (arg.value_)
         os << "\"" << arg.value_.value() << "\"";
     else
-        os << "nullopt";
+        os << "std::nullopt";
     os << "\n}";
     return os;
 }
