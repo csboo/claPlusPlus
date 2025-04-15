@@ -1,11 +1,9 @@
+#include "Arg.hpp"
+
 #include <cstdlib>
 #include <optional>
 #include <pthread.h>
 #include <string>
-#include <utility>
-
-#include "../include/Arg.hpp"
-#include "../src/utils.cpp"
 
 Arg::Arg(const std::string& name) :
     name_(name),
