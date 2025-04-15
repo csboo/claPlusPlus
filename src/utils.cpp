@@ -33,3 +33,8 @@ template <typename... Args> std::string concat(Args&&... args) {
         (oss << std::forward<Args>(args), 0)...}; // using initializer_list for fold-like behavior
     return oss.str();
 }
+
+const std::string PROGRAM_NAME() {
+   const std::string& raw_program_name = program_invocation_name;
+    return raw_program_name.substr(raw_program_name.rfind('/') + 1);
+}
