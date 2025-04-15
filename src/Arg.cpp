@@ -10,24 +10,24 @@
 Arg::Arg(std::string name) : name_(std::move(name)), long_(name_), required_(false), takes_value_(true), has_env_(false), try_env_(false), value_(std::nullopt)  {}
 
 // Setters
-Arg& Arg::short_name(const std::string& s) {
-    short_ = s;
+Arg& Arg::short_name(const std::string& short_name) {
+    short_name_ = short_name;
     return *this;
 }
-Arg& Arg::help(const std::string& h) {
-    help_ = h;
+Arg& Arg::help(const std::string& help) {
+    help_ = help;
     return *this;
 }
 Arg& Arg::required(bool is_required) {
-    required_ = is_required;
+    is_required_ = is_required;
     return *this;
 }
-Arg& Arg::takes_value(bool takes) {
-    takes_value_ = takes;
+Arg& Arg::takes_value(bool takes_value) {
+    takes_value_ = takes_value;
     return *this;
 }
-Arg& Arg::default_value(const std::string& default_val) {
-    default_ = default_val;
+Arg& Arg::default_value(const std::string& default_value) {
+    default_value_ = default_value;
     return *this;
 }
 bool Arg::requires_value() const { return takes_value_; }
