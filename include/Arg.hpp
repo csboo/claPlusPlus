@@ -36,16 +36,15 @@ class Arg {
     friend class ClapParser;
 
     std::string name_;
-    std::string short_;
-    std::string long_;
+    std::string short_name_;
+    std::string long_name_;
     std::string help_;
-    bool required_;
+    bool is_required_;
     bool takes_value_;
-    bool has_env_;
     std::string env_name_;
     bool try_env_;
-    std::string try_env_name_;
-    std::string default_;
+    // std::string try_env_name_;
+    std::string default_value_;
     std::optional<std::string> value_;
 
     [[nodiscard]] bool has_default() const;
