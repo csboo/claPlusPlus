@@ -49,8 +49,7 @@ void ClapParser::parse_options(const std::vector<std::string>& args) {
 void ClapParser::check_env() {
     for (auto& arg : args_) {
         if (arg.try_env_) {
-            std::string program_name = this->program_name_.substr(this->program_name_.rfind('/') + 1);
-            std::string env_name = program_name + '_' + arg.name();
+            std::string env_name = PROGRAM_NAME() + '_' + arg.get__name();
             std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
             auto value_from_env = std::getenv(env_name.c_str());
             if (value_from_env) {
@@ -169,7 +168,7 @@ void ClapParser::handle_missing_positional(const Arg& arg) {
   }
 
 void ClapParser::print_help() const {
-    std::cout << "Usage: " << program_name_ << " [OPTIONS]";
+    std::cout << "Usage: " << PROGRAM_NAME() << " [OPTIONS]";
     auto positionals = get_positional_args();
     for (const auto& pos : positionals) {
         std::cout << " [" << pos.get__name() << "]";
@@ -240,7 +239,7 @@ bool ClapParser::has(const std::string& name) const { return values_.find(name) 
 
 std::ostream& operator<<(std::ostream& os, const ClapParser& parser) {
     os << "ClapParser {\n";
-    os << "  program_name: \"" << parser.program_name_ << "\",\n";
+    os << "  program_name: \"" << PROGRAM_NAME() << "\",\n";
 
     os << "  args: [\n";
     for (const auto& arg : parser.args_) {
