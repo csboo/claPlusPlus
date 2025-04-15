@@ -1,6 +1,8 @@
 #pragma once
 #include "Arg.hpp"
+#include <iostream>
 #include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -15,9 +17,10 @@ class ClapParser {
     template <typename T> std::optional<T> get_one_as(const std::string& name) const;
     bool has(const std::string& name) const;
 
+    friend std::ostream& operator<<(std::ostream& os, const ClapParser& parser);
   private:
     std::vector<Arg> args_;
-    std::unordered_map<std::string, std::any> values_;
+    std::unordered_map<std::string, std::string> values_;
     std::string program_name_;
 
     // Helper methods
@@ -31,6 +34,7 @@ class ClapParser {
     void parse_options(const std::vector<std::string>& args);
     void parse_positional_args(const std::vector<std::string>& args);
     void check_required_args();
+    void check_env();
     void handle_missing_positional(const Arg& arg);
 
     size_t handle_long_option(const std::string& token, const std::vector<std::string>& args, size_t i);
@@ -43,8 +47,11 @@ class ClapParser {
 template <typename T> std::optional<T> ClapParser::get_one_as(const std::string& name) const {
     auto it = values_.find(name);
     if (it == values_.end()) {
-        // throw std::runtime_error("Argument not found: " + name);
         return std::nullopt;
     }
-    return std::any_cast<T>(it->second);
+
+    T value;
+    std::istringstream(it->second) >> value;
+    return value;
+    // return std::any_cast<T>(it->second);
 }

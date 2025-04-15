@@ -1,6 +1,10 @@
-#include "include/Parser.hpp"
+#include "../include/Parser.hpp"
+#include "Arg.hpp"
+#include <cctype>
 #include <cstdlib>
+#include <ios>
 #include <iostream>
+#include <string>
 #include <unordered_set>
 
 void ClapParser::parse(int argc, char* argv[]) {
@@ -8,8 +12,10 @@ void ClapParser::parse(int argc, char* argv[]) {
     std::vector<std::string> args(argv + 1, argv + argc);
     std::unordered_set<std::string> args_with_values;
 
+    apply_defaults();
+    check_env();
     parse_options(args);
-    parse_positional_args(args);
+    // parse_positional_args(args);
 
     // Validate all arguments that need values received them
     for (const auto& arg : args_) {
@@ -21,7 +27,6 @@ void ClapParser::parse(int argc, char* argv[]) {
     }
 
     check_required_args();
-    apply_defaults();
 }
 
 void ClapParser::add_arg(const Arg& arg) { args_.push_back(arg); }
@@ -41,26 +46,45 @@ void ClapParser::parse_options(const std::vector<std::string>& args) {
     }
 }
 
-void ClapParser::parse_positional_args(const std::vector<std::string>& args) {
-    std::vector<std::string> positional_args;
-
-    // Collect positional arguments (tokens not starting with '-')
-    for (const auto& token : args) {
-        if (!is_option(token)) {
-            positional_args.push_back(token);
+void ClapParser::check_env() {
+    for (auto& arg : args_) {
+        if (arg.try_env_) {
+            std::string program_name = this->program_name_.substr(this->program_name_.rfind('/') + 1);
+            std::string env_name = program_name + '_' + arg.name();
+            std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
+            // std::cerr << env_name << "\n";
+            arg.set_try_env_name(env_name);
+            auto value_from_env = std::getenv(env_name.c_str());
+            if (value_from_env) {
+                values_[arg.name()] = value_from_env;
+            }
+        }
+        if (arg.has_env() && arg.value_.has_value()) {
+            values_[arg.name()] = arg.value_.value();
         }
     }
+};
 
-    // Assign positional arguments to their respective slots
-    auto positional_specs = get_positional_args();
-    for (size_t j = 0; j < positional_specs.size(); ++j) {
-        if (j < positional_args.size()) {
-            values_[positional_specs[j].name()] = positional_specs[j].convert(positional_args[j]);
-        } else {
-            handle_missing_positional(positional_specs[j]);
-        }
-    }
-}
+// void ClapParser::parse_positional_args(const std::vector<std::string>& args) {
+//     std::vector<std::string> positional_args;
+
+//     // Collect positional arguments (tokens not starting with '-')
+//     for (const auto& token : args) {
+//         if (!is_option(token)) {
+//             positional_args.push_back(token);
+//         }
+//     }
+
+//     // Assign positional arguments to their respective slots
+//     auto positional_specs = get_positional_args();
+//     for (size_t j = 0; j < positional_specs.size(); ++j) {
+//         if (j < positional_args.size()) {
+//             values_[positional_specs[j].name()] = positional_specs[j].convert(positional_args[j]);
+//         } else {
+//             handle_missing_positional(positional_specs[j]);
+//         }
+//     }
+// }
 
 void ClapParser::check_required_args() {
     for (const auto& arg : args_) {
@@ -98,7 +122,7 @@ size_t ClapParser::handle_short_option(const std::string& token, const std::vect
     }
     const Arg* arg = find_option(opt_name);
     if (arg == nullptr) {
-        throw std::runtime_error("Unknown option: " + token);
+        throw std::runtime_error("unknown option: " + token);
     }
 
     if (arg->takes_value()) {
@@ -114,12 +138,12 @@ size_t ClapParser::handle_option_with_value(const Arg* arg, const std::vector<st
                                             const std::string& token) {
     if (i + 1 < args.size() && !is_option(args[i + 1])) {
         // Use next argument as value
-        values_[arg->name()] = arg->convert(args[i + 1]);
+        values_[arg->name()] = std::string(args[i + 1]);
         return i + 1; // Skip the value in the next iteration
     }
     if (arg->has_default()) {
         // Use default value
-        values_[arg->name()] = arg->convert(arg->default_value());
+        values_[arg->name()] = std::string(arg->default_value());
     } else {
         throw std::runtime_error("Option '" + token + "' requires a value but none was provided");
     }
@@ -132,7 +156,7 @@ void ClapParser::handle_missing_positional(const Arg& arg) {
         throw std::runtime_error("Missing required positional argument: " + arg.name());
     }
     if (arg.has_default()) {
-        values_[arg.name()] = arg.convert(arg.default_value());
+        values_[arg.name()] = std::string(arg.default_value());
     }
 }
 
@@ -155,22 +179,19 @@ void ClapParser::print_help() const {
     std::cout << "\n\nOptions:\n";
 
     for (const auto& arg : args_) {
-        if (!arg.short_name().empty()) {
-            std::cout << "  ";
-            std::cout << "-" << arg.short_name() << ", ";
-            std::cout << "--" << arg.long_name();
-            std::cout << "\t" << arg.help();
-            if (arg.has_default())
-                std::cout << " (default: " << arg.default_value() << ")";
-            std::cout << "\n";
-        } else {
-            std::cout << "      ";
-            std::cout << "--" << arg.long_name();
-            std::cout << "\t" << arg.help();
-            if (arg.has_default())
-                std::cout << " (default: " << arg.default_value() << ")";
-            std::cout << "\n";
+        arg.short_name().empty()? std::cout << "      " : std::cout << "  -" << arg.short_name() << ", "; 
+        std::cout << "--" << arg.long_name();
+        std::cout << "\t" << arg.help();
+        if (arg.has_default()) {
+            std::cout << " (default: " << arg.default_value() << ")";
         }
+        if (arg.has_env()) {
+            std::cout << " [env: " << arg.env_name_ << "]";
+        }
+        if (arg.try_env_) {
+            std::cout << " [def.env: " << arg.try_env_name_ << "]";
+        }
+        std::cout << "\n";
     }
     std::cout << "  ";
     std::cout << "-h" << ", ";
@@ -212,9 +233,29 @@ std::vector<Arg> ClapParser::get_positional_args() const {
 void ClapParser::apply_defaults() {
     for (const auto& arg : args_) {
         if (values_.find(arg.name()) == values_.end() && arg.has_default()) {
-            values_[arg.name()] = arg.convert(arg.default_value());
+            values_[arg.name()] = std::string(arg.default_value());
         }
     }
 }
 
 bool ClapParser::has(const std::string& name) const { return values_.find(name) != values_.end(); }
+
+std::ostream& operator<<(std::ostream& os, const ClapParser& parser) {
+    os << "ClapParser {\n";
+    os << "  program_name: \"" << parser.program_name_ << "\",\n";
+
+    os << "  args: [\n";
+    for (const auto& arg : parser.args_) {
+        os << "    " << arg << ",\n";
+    }
+    os << "  ],\n";
+
+    os << "  values: {\n";
+    for (const auto& [key, val] : parser.values_) {
+        os << "    \"" << key << "\": \"" << val << "\",\n";
+    }
+    os << "  }\n";
+
+    os << "}";
+    return os;
+}
