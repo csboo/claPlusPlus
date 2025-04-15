@@ -8,7 +8,7 @@
 
 class Arg {
   public:
-    explicit Arg(std::string name);
+    Arg(const std::string& name);
 
     Arg& short_name(const std::string& short_name);
     Arg& long_name(const std::string& long_name);

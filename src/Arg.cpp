@@ -7,7 +7,18 @@
 #include "../include/Arg.hpp"
 #include "../src/utils.cpp"
 
-Arg::Arg(std::string name) : name_(std::move(name)), long_(name_), required_(false), takes_value_(true), has_env_(false), try_env_(false), value_(std::nullopt)  {}
+Arg::Arg(const std::string& name) :
+    name_(name),
+    short_name_(""),
+    long_name_(this->name_),
+    help_(""),
+    is_required_(false),
+    takes_value_(true),
+    env_name_(""),
+    try_env_(false),
+    default_value_(""),
+    value_(std::nullopt)
+{}
 
 // Setters
 Arg& Arg::short_name(const std::string& short_name) {
