@@ -6,8 +6,6 @@
 #include <optional>
 #include <string>
 
-class ClapParser;
-
 class Arg {
   public:
     explicit Arg(std::string name);
