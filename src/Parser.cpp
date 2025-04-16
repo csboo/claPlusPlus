@@ -6,23 +6,20 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
-#include <unordered_set>
 
 void ClapParser::parse(const int& argc, char* argv[]) {
     std::vector<std::string> args(argv + 1, argv + argc);
-    std::unordered_set<std::string> args_with_values;
 
     apply_defaults();
     check_env();
-    parse_options(args);
+    parse_options(args); // parse from cli (argc, argv)
     // parse_positional_args(args);
 
     // Validate all arguments that need values received them
     for (const auto& arg : args_) {
-        if (arg.get__takes_value() && args_with_values.count(arg.get__name()) == 0) {
-            if (arg.get__is_required() && !arg.has_default()) {
-                throw std::runtime_error("argument '" + arg.get__name() + "' requires a value");
-            }
+        std::cerr << arg << "\n\n\n";
+        if (arg.get__is_required() && !arg.has_value()) {
+            throw std::runtime_error("argument '" + arg.get__name() + "' requires a value");
         }
     }
 
