@@ -1,9 +1,10 @@
 #pragma once
 
+#include <algorithm>
 #include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <sstream>
 
 template <typename T, typename E>
 inline T ok_or(std::optional<T> opt, E&& err) {
@@ -34,6 +35,10 @@ template <typename... Args> inline std::string concat(Args&&... args) {
     (void)std::initializer_list<int>{
         (oss << std::forward<Args>(args), 0)...}; // using initializer_list for fold-like behavior
     return oss.str();
+}
+
+inline void to_upper(std::string &s) {
+    std::ranges::transform(s, s.begin(), [](const unsigned char& c) { return std::toupper(c); });
 }
 
 inline const std::string PROGRAM_NAME() {

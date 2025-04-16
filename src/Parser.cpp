@@ -19,7 +19,7 @@ void ClapParser::parse(const int& argc, char* argv[]) {
 
     // Validate all arguments that need values received them
     for (const auto& arg : this->args_) {
-        if (arg.get__takes_value() && args_with_values.count(arg.get__name()) == 0) {
+        if (arg.get__takes_value() && !args_with_values.contains(arg.get__name())) {
             if (arg.get__is_required() && !arg.has_default()) {
                 throw std::runtime_error("argument '" + arg.get__name() + "' requires a value");
             }
@@ -50,7 +50,7 @@ void ClapParser::check_env() {
     for (auto& arg : this->args_) {
         if (arg.auto_env_) {
             std::string env_name = PROGRAM_NAME() + '_' + arg.get__name();
-            std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
+            to_upper(env_name);
             auto value_from_env = std::getenv(env_name.c_str());
             if (value_from_env) {
                 this->values_[arg.get__name()] = value_from_env;
