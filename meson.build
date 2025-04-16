@@ -15,7 +15,7 @@ include_dir = include_directories('include')
 # Build executable directly from all necessary sources
 executable('claPlusPlus',
   sources: [
-    'src/old_main.cpp',
+    'src/example.cpp',
     'src/Arg.cpp',
     'src/Parser.cpp'
   ],
