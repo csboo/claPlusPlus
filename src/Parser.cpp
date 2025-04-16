@@ -35,9 +35,9 @@ void ClapParser::parse_options(const std::vector<std::string>& args) {
     for (size_t i = 0; i < args.size(); ++i) {
         const std::string& token = args[i];
 
-        if (this->is_long_option(token)) {
+        if (ClapParser::is_long_option(token)) {
             i = this->handle_long_option(token, args, i);
-        } else if (this->is_short_option(token)) {
+        } else if (ClapParser::is_short_option(token)) {
             i = this->handle_short_option(token, args, i);
         } else {
             // Positional arguments are handled separately
@@ -83,7 +83,7 @@ void ClapParser::check_env() {
 //     }
 // }
 
-void ClapParser::check_required_args() {
+void ClapParser::check_required_args() const {
     for (const auto& arg : this->args_) {
         if (arg.get__is_required() && this->values_.find(arg.get__name()) == this->values_.end()) {
             throw std::runtime_error("missing required argument: " + arg.get__name());
@@ -157,13 +157,13 @@ void ClapParser::handle_missing_positional(const Arg& arg) {
     }
 }
 
-  inline bool ClapParser::is_option(const std::string& token) const {
+  inline  bool  ClapParser::is_option(const std::string& token) {
       return token.substr(0, 2) == "--" || (token[0] == '-' && token.size() > 1);
   }
   
-  inline bool ClapParser::is_long_option(const std::string& token) const { return token.substr(0, 2) == "--"; }
+  inline bool ClapParser::is_long_option(const std::string& token) { return token.substr(0, 2) == "--"; }
   
-  inline bool ClapParser::is_short_option(const std::string& token) const {
+  inline bool ClapParser::is_short_option(const std::string& token) {
       return token[0] == '-' && token.size() > 1 && token[1] != '-';
   }
 

@@ -25,16 +25,16 @@ class ClapParser {
     std::string program_name_;
 
     // Helper methods
-    inline bool is_option(const std::string& token) const ;
-    inline bool is_long_option(const std::string& token) const ;
-    inline bool is_short_option(const std::string& token) const ;
+    static inline bool is_option(const std::string& token);
+    static inline bool is_long_option(const std::string& token);
+    static inline bool is_short_option(const std::string& token);
     const Arg* find_option(const std::string& name) const;
     std::vector<Arg> get_positional_args() const;
     void apply_defaults();
 
     void parse_options(const std::vector<std::string>& args);
     void parse_positional_args(const std::vector<std::string>& args);
-    void check_required_args();
+    void check_required_args() const;
     void check_env();
     void handle_missing_positional(const Arg& arg);
 
@@ -46,8 +46,8 @@ class ClapParser {
 };
 
 template <typename T> std::optional<T> ClapParser::get_one_as(const std::string& name) const {
-    auto it = values_.find(name);
-    if (it == values_.end()) {
+    auto it = this->values_.find(name);
+    if (it == this->values_.end()) {
         return std::nullopt;
     }
 
