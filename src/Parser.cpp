@@ -102,7 +102,7 @@ size_t ClapParser::handle_long_option(const std::string& token, const std::vecto
         throw std::runtime_error("unknown option: " + token);
     }
 
-    if (arg->get__takes_value()) {
+    if (arg->get__is_flag()) {
         i = handle_option_with_value(arg, args, i, token);
     } else {
         values_[arg->get__name()] = true; // Boolean flag
@@ -122,7 +122,7 @@ size_t ClapParser::handle_short_option(const std::string& token, const std::vect
         throw std::runtime_error("unknown option: " + token);
     }
 
-    if (arg->get__takes_value()) {
+    if (arg->get__is_flag()) {
         i = handle_option_with_value(arg, args, i, token);
     } else {
         values_[arg->get__name()] = true; // Boolean flag

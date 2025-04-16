@@ -16,7 +16,7 @@ class Arg {
     Arg& long_name(const std::string& long_name);
     Arg& help(const std::string& help);
     Arg& required(bool is_required);
-    Arg& takes_value(bool takes);
+    Arg& is_flag(bool takes);
     Arg& default_value(const std::string& default_val);
     Arg& from_env(const char* env_var_name);
     Arg& auto_env();
@@ -31,7 +31,7 @@ class Arg {
     std::string long_name_;
     std::string help_;
     bool is_required_;
-    bool takes_value_;
+    bool is_flag_;
     std::string env_name_;
     bool auto_env_;
     // std::string auto_env_name_;
@@ -80,11 +80,11 @@ class Arg {
     }
 
     // takes_value_
-    [[nodiscard]] inline bool get__takes_value() const {
-      return this->takes_value_;
+    [[nodiscard]] inline bool get__is_flag() const {
+      return this->is_flag_;
     }
-    inline void set__takes_value(const bool& takes_value) {
-      this->takes_value_ = takes_value;
+    inline void set__is_flag(const bool& takes_value) {
+      this->is_flag_ = takes_value;
     }
 
     // env_name_
