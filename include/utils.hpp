@@ -1,9 +1,10 @@
 #pragma once
 
+#include <algorithm>
 #include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <sstream>
 
 template <typename T, typename E>
 inline T ok_or(std::optional<T> opt, E&& err) {
@@ -43,4 +44,8 @@ inline const std::string quote(const std::string& name) {
 inline void print_indent(std::ostream& os, int indent_level) {
     for (int i = 0; i < indent_level; ++i)
         os << '\t';
+}
+
+inline void to_upper(std::string &s) {
+    std::ranges::transform(s, s.begin(), [](const unsigned char& c) { return std::toupper(c); });
 }

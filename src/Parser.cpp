@@ -63,7 +63,7 @@ void ClapParser::check_env() {
     for (auto& arg : args_) {
         if (arg.get__auto_env()) {
             std::string env_name = this->program_name_ + '_' + arg.get__name();
-            std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
+            to_upper(env_name);
             auto value_from_env = std::getenv(env_name.c_str());
             if (value_from_env) {
                 arg.set__value(value_from_env);
