@@ -139,7 +139,7 @@ class Arg {
 
     // has_value_
     [[nodiscard]] inline bool has_value() const {
-      return !this->value_.has_value();
+      return this->value_.has_value();
     }
 
 };
