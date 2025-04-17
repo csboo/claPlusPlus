@@ -16,7 +16,7 @@ class Arg {
     Arg& long_name(const std::string& long_name);
     Arg& help(const std::string& help);
     Arg& required(bool is_required);
-    Arg& is_flag(bool takes);
+    Arg& is_flag(bool is_flag);
     Arg& default_value(const std::string& default_val);
     Arg& from_env(const char* env_var_name);
     Arg& auto_env();
@@ -122,7 +122,7 @@ class Arg {
     [[nodiscard]] inline const std::optional<std::string> get__value() const {
       return this->value_;
     }
-    inline void set__value_(const std::string& value) {
+    inline void set__value(const std::string& value) {
       this->value_ = value;
     }
 
