@@ -10,9 +10,9 @@
 void ClapParser::parse(const int& argc, char* argv[]) {
     std::vector<std::string> args(argv + 1, argv + argc);
 
-    apply_defaults();
-    check_env();
-    parse_options(args); // parse from cli (argc, argv)
+    this->apply_defaults();
+    this->check_env();
+    this->parse_options(args); // parse from cli (argc, argv)
     // parse_positional_args(args);
 
     // Validate all arguments that need values received them
