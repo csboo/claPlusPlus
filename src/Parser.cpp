@@ -53,16 +53,13 @@ void ClapParser::parse_options(const std::vector<std::string>& args) {
 
 void ClapParser::check_env() {
     for (auto& arg : args_) {
-        if (arg.auto_env_) {
+        if (arg.get__auto_env()) {
             std::string env_name = PROGRAM_NAME() + '_' + arg.get__name();
             std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
             auto value_from_env = std::getenv(env_name.c_str());
             if (value_from_env) {
-                values_[arg.get__name()] = value_from_env;
+                arg.set__value(value_from_env);
             }
-        }
-        if (arg.has_env() && arg.value_.has_value()) {
-            values_[arg.get__name()] = arg.value_.value();
         }
     }
 };
@@ -170,9 +167,9 @@ std::vector<Arg> ClapParser::get_positional_args() const {
 }
 
 void ClapParser::apply_defaults() {
-    for (const auto& arg : args_) {
-        if (values_.find(arg.get__name()) == values_.end() && arg.has_default()) {
-            values_[arg.get__name()] = std::string(arg.get__default_value());
+    for (auto& arg : args_) {
+        if (!arg.has_value() && arg.has_default()) {
+            arg.set__value(arg.get__default_value());
         }
     }
 }
