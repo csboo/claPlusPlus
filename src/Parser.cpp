@@ -4,6 +4,7 @@
 
 #include <cctype>
 #include <cstdlib>
+#include <format>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -57,6 +58,12 @@ void ClapParser::check_env() {
             std::string env_name = PROGRAM_NAME() + '_' + arg.get__name();
             std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
             auto value_from_env = std::getenv(env_name.c_str());
+            if (value_from_env) {
+                arg.set__value(value_from_env);
+            }
+        }
+        if (arg.has_env()) {
+            auto value_from_env = std::getenv(arg.get__env_name().c_str());
             if (value_from_env) {
                 arg.set__value(value_from_env);
             }

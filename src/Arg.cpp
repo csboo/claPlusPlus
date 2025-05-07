@@ -45,12 +45,14 @@ Arg& Arg::from_env(const char* env_var_name) {
     // std::string value_from_env = ptr_unwrap_or(std::getenv(env_var_name), concat("value \'", env_var_name, "\' not present in env for: ", this->name_));
     // std::optional<std::string> value_from_env = ptr_unwrap_or(std::getenv(env_var_name), std::nullopt);
     // this->value_ = ptr_unwrap_or(std::getenv(env_var_name), std::nullopt);
+/*
     auto ptr = std::getenv(env_var_name);
     if (!ptr) {
         this->value_ = std::nullopt;
     } else {
         this->value_ = ptr;
     }
+*/
     return *this;    
 };
 Arg& Arg::auto_env() {
