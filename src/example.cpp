@@ -15,7 +15,7 @@ int main(const int argc, char* argv[]) {
   auto num2 = Arg("num2").short_name("N").from_env("TES").default_value("99");
   arg_parser.add_arg(num2);
 
-  arg_parser.add_arg(Arg("test").is_flag(true));
+  arg_parser.add_arg(Arg("test").is_flag());
   // arg_parser.add_arg(Arg("test").is_flag(true));
 
   try {
