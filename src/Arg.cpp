@@ -33,6 +33,7 @@ Arg& Arg::required(bool is_required) {
 }
 Arg& Arg::is_flag()  {
     is_flag_ = true;
+    default_value_ = "0";
     return *this;
 }
 Arg& Arg::default_value(const std::string& default_value) {
