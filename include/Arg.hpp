@@ -16,7 +16,7 @@ class Arg {
     Arg& long_name(const std::string& long_name);
     Arg& help(const std::string& help);
     Arg& required(bool is_required);
-    Arg& is_flag(bool is_flag);
+    Arg& is_flag();
     Arg& default_value(const std::string& default_val);
     Arg& from_env(const char* env_var_name);
     Arg& auto_env();

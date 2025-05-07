@@ -31,8 +31,8 @@ Arg& Arg::required(bool is_required) {
     is_required_ = is_required;
     return *this;
 }
-Arg& Arg::is_flag(bool is_flag)  {
-    is_flag_ = is_flag;
+Arg& Arg::is_flag()  {
+    is_flag_ = true;
     return *this;
 }
 Arg& Arg::default_value(const std::string& default_value) {
