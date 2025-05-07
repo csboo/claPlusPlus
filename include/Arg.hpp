@@ -21,6 +21,7 @@ class Arg {
     Arg& from_env(const char* env_var_name);
     Arg& auto_env();
 
+    static void print_arg(std::ostream& os, const Arg& arg, int indent);
     friend std::ostream& operator<<(std::ostream& os, const Arg& arg);
 
   private:

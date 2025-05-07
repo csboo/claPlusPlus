@@ -57,20 +57,27 @@ Arg& Arg::auto_env() {
     return *this;
 };
 
-std::ostream& operator<<(std::ostream& os, const Arg& arg) {
-    os << "Arg {\n"
-       << "  name: \"" << arg.name_ << "\",\n"
-       << "  short: \"" << arg.short_name_ << "\",\n"
-       << "  long: \"" << arg.long_name_ << "\",\n"
-       << "  help: \"" << arg.help_ << "\",\n"
-       << "  required: " << std::boolalpha << arg.is_required_ << ",\n"
-       << "  is_flag: " << std::boolalpha << arg.is_flag_ << ",\n"
-       << "  default: \"" << arg.default_value_ << "\",\n"
-       << "  value: ";
+void Arg::print_arg(std::ostream& os, const Arg& arg, int indent) {
+    print_indent(os, indent); os << "Arg {\n";
+
+    print_indent(os, indent + 1); os << "name: \"" << arg.name_ << "\",\n";
+    print_indent(os, indent + 1); os << "short: \"" << arg.short_name_ << "\",\n";
+    print_indent(os, indent + 1); os << "long: \"" << arg.long_name_ << "\",\n";
+    print_indent(os, indent + 1); os << "help: \"" << arg.help_ << "\",\n";
+    print_indent(os, indent + 1); os << "required: " << std::boolalpha << arg.is_required_ << ",\n";
+    print_indent(os, indent + 1); os << "is_flag: " << std::boolalpha << arg.is_flag_ << ",\n";
+    print_indent(os, indent + 1); os << "default: \"" << arg.default_value_ << "\",\n";
+    print_indent(os, indent + 1); os << "value: ";
     if (arg.value_)
         os << "\"" << arg.value_.value() << "\"";
     else
         os << "std::nullopt";
-    os << "\n}";
+    os << '\n';
+
+    print_indent(os, indent); os << "}";
+}
+
+std::ostream& operator<<(std::ostream& os, const Arg& arg) {
+    Arg::print_arg(os, arg, 0);
     return os;
 }

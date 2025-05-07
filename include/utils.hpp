@@ -44,3 +44,8 @@ inline const std::string PROGRAM_NAME() {
 inline const std::string quote(const std::string& name) {
     return '\'' + name + '\'';
 }
+
+inline void print_indent(std::ostream& os, int indent_level) {
+    for (int i = 0; i < indent_level; ++i)
+        os << '\t';
+}
