@@ -174,22 +174,28 @@ void ClapParser::apply_defaults() {
     }
 }
 
-std::ostream& operator<<(std::ostream& os, const ClapParser& parser) {
-    os << "ClapParser {\n";
-    os << "  program_name: \"" << PROGRAM_NAME() << "\",\n";
+void ClapParser::print_parser(std::ostream& os, const ClapParser& parser, int indent) {
+    print_indent(os, indent); os << "ClapParser {\n";
 
-    os << "  args: [\n";
+    print_indent(os, indent + 1); os << "program_name: \"" << PROGRAM_NAME() << "\",\n";
+
+    print_indent(os, indent + 1); os << "args: [\n";
     for (const auto& arg : parser.args_) {
-        os << "    " << arg << ",\n";
+        Arg::print_arg(os, arg, indent + 2);
+        os << ",\n";
     }
-    os << "  ],\n";
+    print_indent(os, indent + 1); os << "],\n";
 
-    os << "  values: {\n";
+    print_indent(os, indent + 1); os << "values: {\n";
     for (const auto& [key, val] : parser.values_) {
-        os << "    \"" << key << "\": \"" << val << "\",\n";
+        print_indent(os, indent + 2); os << "\"" << key << "\": \"" << val << "\",\n";
     }
-    os << "  }\n";
+    print_indent(os, indent + 1); os << "}\n";
 
-    os << "}";
+    print_indent(os, indent); os << "}";
+}
+
+std::ostream& operator<<(std::ostream& os, const ClapParser& parser) {
+    ClapParser::print_parser(os, parser, 0);
     return os;
 }
