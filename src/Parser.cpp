@@ -11,6 +11,8 @@
 #include <algorithm>
 
 void ClapParser::parse(const int& argc, char* argv[]) {
+    const std::string& raw_program_name = argv[0];
+    this->program_name_ = raw_program_name.substr(raw_program_name.rfind('/') + 1);
     std::vector<std::string> args(argv + 1, argv + argc);
 
     this->apply_defaults();
@@ -55,7 +57,7 @@ void ClapParser::parse_options(const std::vector<std::string>& args) {
 void ClapParser::check_env() {
     for (auto& arg : args_) {
         if (arg.get__auto_env()) {
-            std::string env_name = PROGRAM_NAME() + '_' + arg.get__name();
+            std::string env_name = this->program_name_ + '_' + arg.get__name();
             std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
             auto value_from_env = std::getenv(env_name.c_str());
             if (value_from_env) {
@@ -112,7 +114,7 @@ void ClapParser::handle_missing_positional(const Arg& arg) {
   }
 
 void ClapParser::print_help() const {
-    std::cout << "Usage: " << PROGRAM_NAME() << " [OPTIONS]";
+    std::cout << "Usage: " << this->program_name_ << " [OPTIONS]";
     auto positionals = get_positional_args();
     for (const auto& pos : positionals) {
         std::cout << " [" << pos.get__name() << "]";
@@ -130,7 +132,9 @@ void ClapParser::print_help() const {
             std::cout << " [env: " << arg.get__env_name() << "]";
         }
         if (arg.get__auto_env()) {
-            std::cout << " [def.env: " << arg.get__auto_env_name() << "]";
+            std::string env_name = this->program_name_ + '_' + arg.get__name();
+            std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
+            std::cout << " [def.env: " << env_name << "]";
         }
         std::cout << "\n";
     }
@@ -184,7 +188,7 @@ void ClapParser::apply_defaults() {
 void ClapParser::print_parser(std::ostream& os, const ClapParser& parser, int indent) {
     print_indent(os, indent); os << "ClapParser {\n";
 
-    print_indent(os, indent + 1); os << "program_name: \"" << PROGRAM_NAME() << "\",\n";
+    print_indent(os, indent + 1); os << "program_name: \"" << parser.program_name_ << "\",\n";
 
     print_indent(os, indent + 1); os << "args: [\n";
     for (const auto& arg : parser.args_) {

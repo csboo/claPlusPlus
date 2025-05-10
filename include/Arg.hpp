@@ -105,11 +105,11 @@ class Arg {
     }
 
     // auto_env_name_
-    [[nodiscard]] inline const std::string get__auto_env_name() const {
-      std::string env_name = PROGRAM_NAME() + '_' + this->get__name();
-      std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
-      return env_name;
-    }
+    // [[nodiscard]] inline const std::string get__auto_env_name() const {
+    //   std::string env_name = PROGRAM_NAME() + '_' + this->get__name();
+    //   std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
+    //   return env_name;
+    // }
 
     // default_
     [[nodiscard]] inline const std::string& get__default_value() const {
