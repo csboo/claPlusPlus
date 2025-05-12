@@ -12,7 +12,12 @@
 
 void ClapParser::parse(const int& argc, char* argv[]) {
     const std::string& raw_program_name = argv[0];
-    this->program_name_ = raw_program_name.substr(raw_program_name.rfind('/') + 1);
+#ifdef _WIN32
+    const char path_separator = '\\';
+#else
+    const char path_separator = '/';
+#endif
+    this->program_name_ = raw_program_name.substr(raw_program_name.find_last_of(path_separator) + 1);
     std::vector<std::string> args(argv + 1, argv + argc);
 
     this->apply_defaults();
