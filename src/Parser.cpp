@@ -12,14 +12,12 @@
 void ClapParser::parse(const int& argc, char* argv[]) {
     const std::string& raw_program_name = argv[0];
 #ifdef _WIN32
-    raw_program_name.substr(raw_program_name.find_last_of('\\') + 1);
-    if (std::string_view(raw_program_name).ends_with(".exe")) {
-        raw_program_name.erase(raw_program_name.size() - 4);
-    }
-    this->program_name_ = raw_program_name;
+    std::string parsed_name = raw_program_name.substr(raw_program_name.find_last_of('\\') + 1);
+    parsed_name.erase(parsed_name.size() - 4);
 #else
-    this->program_name_ = raw_program_name.substr(raw_program_name.find_last_of('/') + 1);
+    std::string parsed_name = raw_program_name.substr(raw_program_name.find_last_of('/') + 1);
 #endif
+    this->program_name_ = parsed_name;
     std::vector<std::string> args(argv + 1, argv + argc);
 
     this->apply_defaults();
