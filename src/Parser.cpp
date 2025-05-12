@@ -4,7 +4,6 @@
 
 #include <cctype>
 #include <cstdlib>
-#include <format>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -13,11 +12,14 @@
 void ClapParser::parse(const int& argc, char* argv[]) {
     const std::string& raw_program_name = argv[0];
 #ifdef _WIN32
-    const char path_separator = '\\';
+    raw_program_name.substr(raw_program_name.find_last_of('\\') + 1);
+    if (std::string_view(raw_program_name).ends_with(".exe")) {
+        raw_program_name.erase(raw_program_name.size() - 4);
+    }
+    this->program_name_ = raw_program_name;
 #else
-    const char path_separator = '/';
+    this->program_name_ = raw_program_name.substr(raw_program_name.find_last_of('/') + 1);
 #endif
-    this->program_name_ = raw_program_name.substr(raw_program_name.find_last_of(path_separator) + 1);
     std::vector<std::string> args(argv + 1, argv + argc);
 
     this->apply_defaults();
