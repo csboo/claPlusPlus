@@ -26,6 +26,7 @@ class ClapParser {
         return std::nullopt;
     }
 
+    static void print_parser(std::ostream& os, const ClapParser& parser, int indent);
     friend std::ostream& operator<<(std::ostream& os, const ClapParser& parser);
   private:
     std::vector<Arg> args_;

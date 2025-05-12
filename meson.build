@@ -23,43 +23,65 @@ executable('claPlusPlus',
   install: false
 )
 
-# project('claplusplus', 'cpp',
-#   version : '0.0.3',
-#   default_options : [
-#     'cpp_std=c++23',
-#     'warning_level=3',
-#     'optimization=g',
-#     'debug=true',
-#     'b_ndebug=if-release'
-#   ]
-# )
+parser_lib = static_library('clap_parser', 
+  sources: ['src/Parser.cpp', 'src/Arg.cpp'],
+  include_directories: include_dir,
+  install: false
+)
 
-# # Include directory
-# include_dir = include_directories('include')
+tests = [
+  'test_priority.cpp',
+  'test_flag.cpp',
+  'test_combo.cpp',
+]
 
-# # Library
-# source_dir = files(
-#   'src/Arg.cpp',
-#   'src/Parser.cpp',
-#   'src/utils.cpp'
-# )
+test_bins = []
+foreach test : tests
+  name = test.replace('.cpp', '')
+  bin = executable(
+     name,
+     'tests/' + test,
+     link_with: parser_lib,
+     include_directories: include_dir,
+     install: false
+  )
+  test_bins += [bin]
+endforeach
 
-# claplusplus_lib = static_library('claplusplus',
-#   sources: source_dir,
-#   include_directories: include_dir,
-#   install: true
-# )
- 
-# # Install headers
-# install_headers(
-#   'include/Arg.hpp',
-#   'include/Parser.hpp',
-#   subdir: 'claplusplus'
-# )
+# register a bunch of test cases
+# TODO basic tests for constructing stuff
+# 1) priority tests (default value '1')
+test('priority_default', test_bins[0],
+     args: [], 
+     env: ['EXPECTED=1'])
+test('priority_auto_env', test_bins[0],
+     args: [], 
+     env: ['TEST_PRIORITY_VAL=2', 'EXPECTED=2'])
+test('priority_from_env', test_bins[0],
+     args: [], 
+     env: ['VAL=3', 'TEST_PRIORITY_VAL=2', 'EXPECTED=3'])
+test('priority_manual', test_bins[0],
+     args: ['--val', '4'], 
+     env: ['VAL=3', 'TEST_PRIORITY_VAL=2', 'EXPECTED=4'])
 
-# executable('app',
-#   sources : 'src/old_main.cpp',
-#   include_directories: include_dir,
-#   link_with: claplusplus_lib,
-#   install : false
-# )
+# 2) flag tests
+test('flag_absent', test_bins[1],
+     args: [], 
+     env: ['EXPECTED=0'])
+test('flag_present', test_bins[1],
+     args: ['--opt'], 
+     env: ['EXPECTED=1'])
+
+# 3) combo tests
+test('combo_default', test_bins[2],
+     args: [], 
+     env: ['EXPECTED_V=10', 'EXPECTED_B=0'])
+test('combo_flag_first', test_bins[2],
+     args: ['--flag', '--val', '7'],
+     env: ['EXPECTED_V=7', 'EXPECTED_B=1'])
+test('combo_value_first', test_bins[2],
+     args: ['--val', '8', '--flag'],
+     env: ['EXPECTED_V=8', 'EXPECTED_B=1'])
+test('combo_env_and_manual', test_bins[2],
+     args: ['--val', '9'],
+     env: ['VAL=4', 'TEST_COMBO_VAL=5', 'EXPECTED_V=9', 'EXPECTED_B=0'])

@@ -10,6 +10,14 @@
 #include <algorithm>
 
 void ClapParser::parse(const int& argc, char* argv[]) {
+    const std::string& raw_program_name = argv[0];
+#ifdef _WIN32
+    std::string parsed_name = raw_program_name.substr(raw_program_name.find_last_of('\\') + 1);
+    parsed_name.erase(parsed_name.size() - 4);
+#else
+    std::string parsed_name = raw_program_name.substr(raw_program_name.find_last_of('/') + 1);
+#endif
+    this->program_name_ = parsed_name;
     std::vector<std::string> args(argv + 1, argv + argc);
 
     this->apply_defaults();
@@ -54,9 +62,15 @@ void ClapParser::parse_options(const std::vector<std::string>& args) {
 void ClapParser::check_env() {
     for (auto& arg : args_) {
         if (arg.get__auto_env()) {
-            std::string env_name = PROGRAM_NAME() + '_' + arg.get__name();
+            std::string env_name = this->program_name_ + '_' + arg.get__name();
             std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
             auto value_from_env = std::getenv(env_name.c_str());
+            if (value_from_env) {
+                arg.set__value(value_from_env);
+            }
+        }
+        if (arg.has_env()) {
+            auto value_from_env = std::getenv(arg.get__env_name().c_str());
             if (value_from_env) {
                 arg.set__value(value_from_env);
             }
@@ -105,7 +119,7 @@ void ClapParser::handle_missing_positional(const Arg& arg) {
   }
 
 void ClapParser::print_help() const {
-    std::cout << "Usage: " << PROGRAM_NAME() << " [OPTIONS]";
+    std::cout << "Usage: " << this->program_name_ << " [OPTIONS]";
     auto positionals = get_positional_args();
     for (const auto& pos : positionals) {
         std::cout << " [" << pos.get__name() << "]";
@@ -123,7 +137,9 @@ void ClapParser::print_help() const {
             std::cout << " [env: " << arg.get__env_name() << "]";
         }
         if (arg.get__auto_env()) {
-            std::cout << " [def.env: " << arg.get__auto_env_name() << "]";
+            std::string env_name = this->program_name_ + '_' + arg.get__name();
+            std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
+            std::cout << " [def.env: " << env_name << "]";
         }
         std::cout << "\n";
     }
@@ -174,22 +190,28 @@ void ClapParser::apply_defaults() {
     }
 }
 
-std::ostream& operator<<(std::ostream& os, const ClapParser& parser) {
-    os << "ClapParser {\n";
-    os << "  program_name: \"" << PROGRAM_NAME() << "\",\n";
+void ClapParser::print_parser(std::ostream& os, const ClapParser& parser, int indent) {
+    print_indent(os, indent); os << "ClapParser {\n";
 
-    os << "  args: [\n";
+    print_indent(os, indent + 1); os << "program_name: \"" << parser.program_name_ << "\",\n";
+
+    print_indent(os, indent + 1); os << "args: [\n";
     for (const auto& arg : parser.args_) {
-        os << "    " << arg << ",\n";
+        Arg::print_arg(os, arg, indent + 2);
+        os << ",\n";
     }
-    os << "  ],\n";
+    print_indent(os, indent + 1); os << "],\n";
 
-    os << "  values: {\n";
+    print_indent(os, indent + 1); os << "values: {\n";
     for (const auto& [key, val] : parser.values_) {
-        os << "    \"" << key << "\": \"" << val << "\",\n";
+        print_indent(os, indent + 2); os << "\"" << key << "\": \"" << val << "\",\n";
     }
-    os << "  }\n";
+    print_indent(os, indent + 1); os << "}\n";
 
-    os << "}";
+    print_indent(os, indent); os << "}";
+}
+
+std::ostream& operator<<(std::ostream& os, const ClapParser& parser) {
+    ClapParser::print_parser(os, parser, 0);
     return os;
 }

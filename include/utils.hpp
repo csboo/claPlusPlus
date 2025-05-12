@@ -36,11 +36,11 @@ template <typename... Args> inline std::string concat(Args&&... args) {
     return oss.str();
 }
 
-inline const std::string PROGRAM_NAME() {
-   const std::string& raw_program_name = program_invocation_name;
-    return raw_program_name.substr(raw_program_name.rfind('/') + 1);
-}
-
 inline const std::string quote(const std::string& name) {
     return '\'' + name + '\'';
+}
+
+inline void print_indent(std::ostream& os, int indent_level) {
+    for (int i = 0; i < indent_level; ++i)
+        os << '\t';
 }
