@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
   auto actual_val = ok_or_throw_str(p.get_one_as<int>("val"), "test argument: 'val' is missing");
   auto actual_boolean = ok_or_throw_str(p.get_one_as<bool>("flag"), "test argument: 'flag' is missing");
 
+  std::cerr << p << '\n';
   assert(actual_val == expected_val);
   assert(actual_boolean == expected_boolean);
   return 0;
