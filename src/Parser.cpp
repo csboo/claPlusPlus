@@ -99,14 +99,14 @@ void ClapParser::check_env() {
 //     }
 // }
 
-void ClapParser::handle_missing_positional(const Arg& arg) {
-    if (arg.get__is_required()) {
-        throw std::runtime_error("missing required positional argument: " + arg.get__name());
-    }
-    if (arg.has_default()) {
-        values_[arg.get__name()] = std::string(arg.get__default_value());
-    }
-}
+// void ClapParser::handle_missing_positional(const Arg& arg) {
+//     if (arg.get__is_required()) {
+//         throw std::runtime_error("missing required positional argument: " + arg.get__name());
+//     }
+//     if (arg.has_default()) {
+//         values_[arg.get__name()] = std::string(arg.get__default_value());
+//     }
+// }
 
   inline bool ClapParser::is_option(const std::string& token) const {
       return token.substr(0, 2) == "--" || (token[0] == '-' && token.size() > 1);
@@ -202,10 +202,6 @@ void ClapParser::print_parser(std::ostream& os, const ClapParser& parser, int in
     }
     print_indent(os, indent + 1); os << "],\n";
 
-    print_indent(os, indent + 1); os << "values: {\n";
-    for (const auto& [key, val] : parser.values_) {
-        print_indent(os, indent + 2); os << "\"" << key << "\": \"" << val << "\",\n";
-    }
     print_indent(os, indent + 1); os << "}\n";
 
     print_indent(os, indent); os << "}";

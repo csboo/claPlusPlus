@@ -6,7 +6,6 @@
 #include <iostream>
 #include <optional>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 class ClapParser {
@@ -30,7 +29,6 @@ class ClapParser {
     friend std::ostream& operator<<(std::ostream& os, const ClapParser& parser);
   private:
     std::vector<Arg> args_;
-    std::unordered_map<std::string, std::string> values_;
     std::string program_name_;
 
     // Helper methods
