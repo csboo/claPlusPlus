@@ -39,7 +39,7 @@ class ClapParser {
     std::vector<Arg> get_positional_args() const;
     void apply_defaults();
 
-    void parse_options(const std::vector<std::string>& args);
+    void parse_cli_args(const std::vector<std::string>& args);
     void check_env();
     void parse_positional_args(const std::vector<std::string>& args);
     void handle_missing_positional(const Arg& arg);

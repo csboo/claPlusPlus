@@ -22,7 +22,7 @@ void ClapParser::parse(const int& argc, char* argv[]) {
 
     this->apply_defaults();
     this->check_env();
-    this->parse_options(args); // parse from cli (argc, argv)
+    this->parse_cli_args(args); // parse from cli (argc, argv)
     // parse_positional_args(args);
 
     // Validate all arguments that need values received them
@@ -36,7 +36,7 @@ void ClapParser::parse(const int& argc, char* argv[]) {
 
 void ClapParser::add_arg(const Arg& arg) { args_.emplace_back(arg); }
 
-void ClapParser::parse_options(const std::vector<std::string>& args) {
+void ClapParser::parse_cli_args(const std::vector<std::string>& args) {
     for (size_t i = 0; i < args.size(); ++i) {
         const auto& token = args.at(i);
 
