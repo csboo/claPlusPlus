@@ -38,7 +38,6 @@ class Arg {
     bool accepts_many_;
     std::string env_name_;
     bool auto_env_;
-    // std::string auto_env_name_;
     std::string default_value_;
     std::optional<std::string> value_;
 
@@ -55,13 +54,6 @@ class Arg {
     DEFINE_GETTER_SETTER(default_value, std::string)
     DEFINE_GETTER_SETTER(value, std::optional<std::string>)
     
-    // auto_env_name_
-    // [[nodiscard]] inline const std::string get__auto_env_name() const {
-    //   std::string env_name = PROGRAM_NAME() + '_' + this->get__name();
-    //   to_upper(env_name);
-    //   return env_name;
-    // }
-
     // ----| Checkers |----
     // has_env_
     [[nodiscard]] inline bool has_env() const { return !this->env_name_.empty(); }
