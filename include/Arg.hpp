@@ -1,9 +1,7 @@
 #pragma once
 
-#include "utils.hpp"
 #include "Macros.hpp"
 
-#include <cerrno>
 #include <ostream>
 #include <iostream>
 #include <optional>

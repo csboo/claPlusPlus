@@ -1,6 +1,6 @@
 #include "Arg.hpp"
+#include "utils.hpp"
 
-#include <cstdlib>
 #include <optional>
 #include <pthread.h>
 #include <string>
