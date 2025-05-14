@@ -82,7 +82,7 @@ class Arg {
       this->is_required_ = is_required;
     }
 
-    // takes_value_
+    // is_flag_
     [[nodiscard]] inline bool get__is_flag() const {
       return this->is_flag_;
     }

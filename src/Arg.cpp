@@ -32,7 +32,7 @@ Arg& Arg::required(bool is_required) {
     is_required_ = is_required;
     return *this;
 }
-Arg& Arg::is_flag()  {
+Arg& Arg::is_flag() {
     is_flag_ = true;
     default_value_ = "0";
     return *this;
