@@ -32,9 +32,9 @@ class ClapParser {
     std::string program_name_;
 
     // Helper methods
-    inline bool is_option(const std::string& token) const ;
-    inline bool is_long_option(const std::string& token) const ;
-    inline bool is_short_option(const std::string& token) const ;
+    static bool is_option(const std::string& token);
+    static bool is_long_option(const std::string& token);
+    static bool is_short_option(const std::string& token);
     static std::optional<Arg*> find_arg(ClapParser& parser, const std::string& name);
     std::vector<Arg> get_positional_args() const;
     void apply_defaults();

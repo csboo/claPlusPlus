@@ -108,15 +108,17 @@ void ClapParser::check_env() {
 //     }
 // }
 
-  inline bool ClapParser::is_option(const std::string& token) const {
-      return token.substr(0, 2) == "--" || (token[0] == '-' && token.size() > 1);
-  }
+bool ClapParser::is_option(const std::string& token) {
+    return token.substr(0, 2) == "--" || (token[0] == '-' && token.size() > 1);
+}
   
-  inline bool ClapParser::is_long_option(const std::string& token) const { return token.substr(0, 2) == "--"; }
+bool ClapParser::is_long_option(const std::string& token) {
+    return token.substr(0, 2) == "--";
+}
   
-  inline bool ClapParser::is_short_option(const std::string& token) const {
-      return token[0] == '-' && token.size() > 1 && token[1] != '-';
-  }
+bool ClapParser::is_short_option(const std::string& token) {
+    return token[0] == '-' && token.size() > 1 && token[1] != '-';
+}
 
 void ClapParser::print_help() const {
     std::cout << "Usage: " << this->program_name_ << " [OPTIONS]";
