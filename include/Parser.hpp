@@ -50,15 +50,19 @@ class ClapParser {
     void parse(const int& argc, char* argv[]);
     void print_help() const;
 
-    template <typename T> inline std::optional<T> get_one_as(const std::string& name) {
+    template <typename T>
+    requires Parseable<T>
+    inline std::optional<T> get_one_as(const std::string& name) {
         Arg* arg = ok_or(ClapParser::find_arg(*this, "--" + name), []{ return std::nullopt; });
 
-        if (auto arg_value = arg->get__value(); arg_value) {
-            T value;
-            std::istringstream(*arg_value) >> value;
-            return value;
-        }
-        return std::nullopt;
+        // if (auto arg_value = arg->get__value(); arg_value) {
+        //     T value;
+        //     std::istringstream(*arg_value) >> value;
+        //     return value;
+        // }
+        // return std::nullopt;
+
+        return Parse<T>::parse(arg->get__value().value());
     }
 
     static void print_parser(std::ostream& os, const ClapParser& parser, int indent);
