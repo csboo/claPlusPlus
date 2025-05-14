@@ -39,6 +39,11 @@ struct Parse<bool> {
     }
 };
 
+template<typename T>
+concept Parseable = requires(std::string_view s) {
+    { Parse<T>::parse(s) } -> std::convertible_to<std::optional<T>>;
+};
+
 class ClapParser {
   public:
     void add_arg(const Arg& arg);
