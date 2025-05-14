@@ -25,14 +25,6 @@ class ClapParser {
     requires Parseable<T>
     inline std::optional<T> get_one_as(const std::string& name) {
         Arg* arg = ok_or(ClapParser::find_arg(*this, "--" + name), []{ return std::nullopt; });
-
-        // if (auto arg_value = arg->get__value(); arg_value) {
-        //     T value;
-        //     std::istringstream(*arg_value) >> value;
-        //     return value;
-        // }
-        // return std::nullopt;
-
         return Parse<T>::parse(arg->get__value().value());
     }
 
@@ -54,5 +46,4 @@ class ClapParser {
     void check_env();
     void parse_positional_args(const std::vector<std::string>& args);
     static void parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args);
-    void handle_missing_positional(const Arg& arg);
 };
