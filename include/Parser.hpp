@@ -11,16 +11,22 @@
 
 template<typename T>
 struct Parse {
-    static_assert(sizeof(T) == 0, "No Parse<T> specialization defined for this type");
-};
-
-template<>
-struct Parse<int> {
-    static std::optional<int> parse(std::string_view s) {
-        int value;
-        auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value);
-        if (ec == std::errc()) return value;
-        return std::nullopt;
+    static std::optional<T> parse(std::string_view s) {
+        if constexpr (std::is_integral_v<T>) {
+            T value;
+            auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value);
+            if (ec == std::errc()) return value;
+            return std::nullopt;
+        }
+        else if constexpr (std::is_floating_point_v<T>) {
+            T value;
+            auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value);
+            if (ec == std::errc()) return value;
+            return std::nullopt;
+        }
+        else {
+            static_assert(sizeof(T) == 0, "No Parse<T> specialization defined for this type");
+        }
     }
 };
 
