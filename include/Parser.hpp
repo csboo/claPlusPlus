@@ -42,5 +42,6 @@ class ClapParser {
     void parse_cli_args(const std::vector<std::string>& args);
     void check_env();
     void parse_positional_args(const std::vector<std::string>& args);
+    static void parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args);
     void handle_missing_positional(const Arg& arg);
 };

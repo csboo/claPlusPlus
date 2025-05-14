@@ -3,11 +3,13 @@
 #include "utils.hpp"
 
 #include <cctype>
+#include <cstddef>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <algorithm>
+#include <vector>
 
 void ClapParser::parse(const int& argc, char* argv[]) {
     const std::string& raw_program_name = argv[0];
@@ -45,16 +47,30 @@ void ClapParser::parse_cli_args(const std::vector<std::string>& args) {
         }
 
         auto arg = ok_or_throw_str(ClapParser::find_arg(*this, token), "unknown option: \'" + token);
+
         if (!arg->get__is_flag()) {
-            if (i + 1 < args.size() && !is_option(args[i + 1])) {
-                arg->set__value(args.at(i + 1));
-                i++; // Skip the value in the next iteration
-            }  else {
-                throw std::runtime_error("option '" + token + "' requires a value but none was provided");
-            }
+            ClapParser::parse_value_for_non_flag(arg, i, args);
         } else {
             arg->set__value("1");
         }
+    }
+}
+
+void ClapParser::parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args) {
+    if (cli_index + 1 < args.size() && !is_option(args.at(cli_index + 1))) {
+        if (arg->get__accepts_many()) {
+            std::string value;
+            while (cli_index + 1 < args.size() && !is_option(args.at(cli_index + 1))) {
+                value += args.at(cli_index + 1) + ' ';
+                cli_index++;
+            }
+            arg->set__value(value);
+        } else {
+            arg->set__value(args.at(cli_index + 1));
+            cli_index++; // Skip the value in the next iteration
+        }
+    }  else {
+        throw std::runtime_error("option '" + arg->get__name() + "' requires a value but none was provided");
     }
 }
 
