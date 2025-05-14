@@ -74,6 +74,7 @@ void Arg::print_arg(std::ostream& os, const Arg& arg, int indent) {
     print_indent(os, indent + 1); os << "help: \"" << arg.help_ << "\",\n";
     print_indent(os, indent + 1); os << "required: " << std::boolalpha << arg.is_required_ << ",\n";
     print_indent(os, indent + 1); os << "is_flag: " << std::boolalpha << arg.is_flag_ << ",\n";
+    print_indent(os, indent + 1); os << "accepts_many: " << std::boolalpha << arg.accepts_many_ << ",\n";
     print_indent(os, indent + 1); os << "default: \"" << arg.default_value_ << "\",\n";
     print_indent(os, indent + 1); os << "value: ";
     if (arg.value_)
