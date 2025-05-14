@@ -23,7 +23,6 @@ void ClapParser::parse(const int& argc, char* argv[]) {
     this->apply_defaults();
     this->check_env();
     this->parse_cli_args(args); // parse from cli (argc, argv)
-    // parse_positional_args(args);
 
     // Validate all arguments that need values received them
     for (const auto& arg : args_) {
@@ -77,36 +76,6 @@ void ClapParser::check_env() {
         }
     }
 };
-
-// void ClapParser::parse_positional_args(const std::vector<std::string>& args) {
-//     std::vector<std::string> positional_args;
-
-//     // Collect positional arguments (tokens not starting with '-')
-//     for (const auto& token : args) {
-//         if (!is_option(token)) {
-//             positional_args.push_back(token);
-//         }
-//     }
-
-//     // Assign positional arguments to their respective slots
-//     auto positional_specs = get_positional_args();
-//     for (size_t j = 0; j < positional_specs.size(); ++j) {
-//         if (j < positional_args.size()) {
-//             values_[positional_specs[j].name()] = positional_specs[j].convert(positional_args[j]);
-//         } else {
-//             handle_missing_positional(positional_specs[j]);
-//         }
-//     }
-// }
-
-// void ClapParser::handle_missing_positional(const Arg& arg) {
-//     if (arg.get__is_required()) {
-//         throw std::runtime_error("missing required positional argument: " + arg.get__name());
-//     }
-//     if (arg.has_default()) {
-//         values_[arg.get__name()] = std::string(arg.get__default_value());
-//     }
-// }
 
 bool ClapParser::is_option(const std::string& token) {
     return token.substr(0, 2) == "--" || (token[0] == '-' && token.size() > 1);
