@@ -12,6 +12,7 @@ Arg::Arg(const std::string& name) :
     help_(""),
     is_required_(false),
     is_flag_(false),
+    accepts_many_(false),
     env_name_(""),
     auto_env_(false),
     default_value_(""),
@@ -34,6 +35,10 @@ Arg& Arg::required(bool is_required) {
 Arg& Arg::is_flag()  {
     is_flag_ = true;
     default_value_ = "0";
+    return *this;
+}
+Arg& Arg::accepts_many() {
+    accepts_many_ = true;
     return *this;
 }
 Arg& Arg::default_value(const std::string& default_value) {
