@@ -3,6 +3,11 @@
 #include "Arg.hpp"
 #include "utils.hpp"
 
+#include <optional>
+#include <string_view>
+#include <type_traits>
+#include <system_error>
+#include <cstdlib>
 #include <charconv>
 #include <iostream>
 #include <optional>
@@ -18,10 +23,22 @@ struct Parse {
             if (ec == std::errc()) return value;
             return std::nullopt;
         }
-        else if constexpr (std::is_floating_point_v<T>) {
-            T value;
-            auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value);
-            if (ec == std::errc()) return value;
+        else if constexpr (std::is_same_v<T, float>) {
+            char* end = nullptr;
+            float value = std::strtof(s.data(), &end);
+            if (end == s.data() + s.size()) return value;
+            return std::nullopt;
+        }
+        else if constexpr (std::is_same_v<T, double>) {
+            char* end = nullptr;
+            double value = std::strtod(s.data(), &end);
+            if (end == s.data() + s.size()) return value;
+            return std::nullopt;
+        }
+        else if constexpr (std::is_same_v<T, long double>) {
+            char* end = nullptr;
+            long double value = std::strtold(s.data(), &end);
+            if (end == s.data() + s.size()) return value;
             return std::nullopt;
         }
         else {
