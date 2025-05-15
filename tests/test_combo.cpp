@@ -18,12 +18,12 @@ int main(int argc, char* argv[]) {
 
     // EXPECTED_V   -> any int
     // EXPECTED_B   -> "1" or "0"
-    const auto ev = std::getenv("EXPECTED_V");
-    const auto eb = std::getenv("EXPECTED_B");
+    auto *const ev = std::getenv("EXPECTED_V");
+    auto *const eb = std::getenv("EXPECTED_B");
     assert(ev && eb && "EXPECTED_V/B must be set");
 
     int expected_val = std::stoi(ev);
-    bool expected_boolean = std::stoi(eb);
+    bool expected_boolean = std::stoi(eb) != 0;
 
     auto actual_val = ok_or_throw_str(p.get_one_as<int>("val"), "test argument: 'val' is missing");
     auto actual_boolean = ok_or_throw_str(p.get_one_as<bool>("flag"), "test argument: 'flag' is missing");

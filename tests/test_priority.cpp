@@ -23,7 +23,7 @@ int main(const int argc, char* argv[]) {
     p.parse(argc, argv);
 
     // gets read from meson test env
-    const auto e = std::getenv("EXPECTED");
+    auto *const e = std::getenv("EXPECTED");
     assert(e && "EXPECTED must be set");
     int expected = std::stoi(e);
 
