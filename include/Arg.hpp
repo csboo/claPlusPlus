@@ -51,14 +51,14 @@ class Arg {
     DEFINE_GETTER_SETTER(auto_env, bool)
     DEFINE_GETTER_SETTER(default_value, std::string)
     DEFINE_GETTER_SETTER(value, std::optional<std::string>)
-    
+
     // ----| Checkers |----
     // has_env_
-    [[nodiscard]]  bool has_env() const { return !this->env_name_.empty(); }
-    
+    [[nodiscard]] bool has_env() const { return !this->env_name_.empty(); }
+
     // has_default_
-    [[nodiscard]]  bool has_default() const { return !this->default_value_.empty(); }
+    [[nodiscard]] bool has_default() const { return !this->default_value_.empty(); }
 
     // has_value_
-    [[nodiscard]]  bool has_value() const { return this->value_.has_value(); }
+    [[nodiscard]] bool has_value() const { return this->value_.has_value(); }
 };
