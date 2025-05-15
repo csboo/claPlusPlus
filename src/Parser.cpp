@@ -107,10 +107,6 @@ bool ClapParser::is_short_option(const std::string& token) {
 
 void ClapParser::print_help() const {
     std::cout << "Usage: " << this->program_name_ << " [OPTIONS]";
-    auto positionals = get_positional_args();
-    for (const auto& pos : positionals) {
-        std::cout << " [" << pos.get__name() << "]";
-    }
     std::cout << "\n\nOptions:\n";
 
     for (const auto& arg : args_) {
@@ -135,16 +131,6 @@ void ClapParser::print_help() const {
     std::cout << "--help";
     std::cout << "\t" << "Prints this help message";
     std::cout << "\n";
-
-    if (!positionals.empty()) {
-        std::cout << "\nPositional arguments:\n";
-        for (const auto& pos : positionals) {
-            std::cout << "  " << pos.get__name() << "\t" << pos.get__help();
-            if (pos.has_default())
-                std::cout << " (default: " << pos.get__default_value() << ")";
-            std::cout << "\n";
-        }
-    }
 }
 
 // Helper methods
@@ -157,16 +143,6 @@ std::optional<Arg*> ClapParser::find_arg(ClapParser& parser, const std::string& 
         return std::nullopt;
     }
     return &(*it);
-}
-
-std::vector<Arg> ClapParser::get_positional_args() const {
-    std::vector<Arg> positional;
-    for (const auto& arg : args_) {
-        if (arg.get__short_name().empty() && arg.get__long_name().empty()) {
-            positional.push_back(arg);
-        }
-    }
-    return positional;
 }
 
 void ClapParser::apply_defaults() {

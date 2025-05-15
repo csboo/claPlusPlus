@@ -2,70 +2,14 @@
 
 #include "Arg.hpp"
 #include "utils.hpp"
+#include "Parsables.hpp"
 
 #include <optional>
-#include <string_view>
-#include <type_traits>
-#include <system_error>
 #include <cstdlib>
-#include <charconv>
 #include <iostream>
 #include <optional>
 #include <string>
 #include <vector>
-
-template<typename T>
-struct Parse {
-    static std::optional<T> parse(std::string_view s) {
-        if constexpr (std::is_integral_v<T>) {
-            T value;
-            auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value);
-            if (ec == std::errc()) return value;
-            return std::nullopt;
-        }
-        else if constexpr (std::is_same_v<T, float>) {
-            char* end = nullptr;
-            float value = std::strtof(s.data(), &end);
-            if (end == s.data() + s.size()) return value;
-            return std::nullopt;
-        }
-        else if constexpr (std::is_same_v<T, double>) {
-            char* end = nullptr;
-            double value = std::strtod(s.data(), &end);
-            if (end == s.data() + s.size()) return value;
-            return std::nullopt;
-        }
-        else if constexpr (std::is_same_v<T, long double>) {
-            char* end = nullptr;
-            long double value = std::strtold(s.data(), &end);
-            if (end == s.data() + s.size()) return value;
-            return std::nullopt;
-        }
-        else {
-            static_assert(sizeof(T) == 0, "No Parse<T> specialization defined for this type");
-        }
-    }
-};
-
-template<>
-struct Parse<std::string> {
-    static std::optional<std::string> parse(std::string_view s) {
-        return std::string(s);
-    }
-};
-
-template<>
-struct Parse<bool> {
-    static std::optional<bool> parse(std::string_view s) {
-      auto as_int = Parse<int>::parse(s).value();
-      return as_int;
-    }
-};
-
-template<typename T>
-concept Parseable = requires(std::string_view s) {
-    { Parse<T>::parse(s) } -> std::convertible_to<std::optional<T>>;
-};
 
 class ClapParser {
   public:
@@ -77,14 +21,6 @@ class ClapParser {
     requires Parseable<T>
     inline std::optional<T> get_one_as(const std::string& name) {
         Arg* arg = ok_or(ClapParser::find_arg(*this, "--" + name), []{ return std::nullopt; });
-
-        // if (auto arg_value = arg->get__value(); arg_value) {
-        //     T value;
-        //     std::istringstream(*arg_value) >> value;
-        //     return value;
-        // }
-        // return std::nullopt;
-
         return Parse<T>::parse(arg->get__value().value());
     }
 
@@ -106,5 +42,4 @@ class ClapParser {
     void check_env();
     void parse_positional_args(const std::vector<std::string>& args);
     static void parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args);
-    void handle_missing_positional(const Arg& arg);
 };
