@@ -2,13 +2,12 @@
 #include "Arg.hpp"
 #include "utils.hpp"
 
-#include <cctype>
+#include <algorithm>
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <algorithm>
 #include <vector>
 
 void ClapParser::parse(const int& argc, char* argv[]) {
@@ -46,7 +45,7 @@ void ClapParser::parse_cli_args(const std::vector<std::string>& args) {
             exit(0);
         }
 
-        auto arg = ok_or_throw_str(ClapParser::find_arg(*this, token), "unknown option: \'" + token);
+        auto *arg = ok_or_throw_str(ClapParser::find_arg(*this, token), "unknown option: \'" + token);
 
         if (!arg->get__is_flag()) {
             ClapParser::parse_value_for_non_flag(arg, i, args);
@@ -79,14 +78,14 @@ void ClapParser::check_env() {
         if (arg.get__auto_env()) {
             std::string env_name = this->program_name_ + '_' + arg.get__name();
             to_upper(env_name);
-            auto value_from_env = std::getenv(env_name.c_str());
-            if (value_from_env) {
+            auto *value_from_env = std::getenv(env_name.c_str());
+            if (value_from_env != nullptr) {
                 arg.set__value(value_from_env);
             }
         }
         if (arg.has_env()) {
-            auto value_from_env = std::getenv(arg.get__env_name().c_str());
-            if (value_from_env) {
+            auto *value_from_env = std::getenv(arg.get__env_name().c_str());
+            if (value_from_env != nullptr) {
                 arg.set__value(value_from_env);
             }
         }
@@ -94,15 +93,15 @@ void ClapParser::check_env() {
 };
 
 bool ClapParser::is_option(const std::string& token) {
-    return token.substr(0, 2) == "--" || (token[0] == '-' && token.size() > 1);
+    return token.starts_with("--") || (token.starts_with('-') && token.size() > 1);
 }
   
 bool ClapParser::is_long_option(const std::string& token) {
-    return token.substr(0, 2) == "--";
+    return token.starts_with("--");
 }
   
 bool ClapParser::is_short_option(const std::string& token) {
-    return token[0] == '-' && token.size() > 1 && token[1] != '-';
+    return token.starts_with("-") && token.size() > 1 && token.at(1) != '-';
 }
 
 void ClapParser::print_help() const {
@@ -121,7 +120,7 @@ void ClapParser::print_help() const {
         }
         if (arg.get__auto_env()) {
             std::string env_name = this->program_name_ + '_' + arg.get__name();
-            std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
+            to_upper(env_name);
             std::cout << " [def.env: " << env_name << "]";
         }
         std::cout << "\n";
@@ -135,7 +134,7 @@ void ClapParser::print_help() const {
 
 // Helper methods
 std::optional<Arg*> ClapParser::find_arg(ClapParser& parser, const std::string& arg_name) {
-    auto it = std::find_if(parser.args_.begin(), parser.args_.end(), [&](Arg& arg) { 
+    auto it = std::ranges::find_if(parser.args_, [&](Arg& arg) { 
         return ( "--" + arg.get__long_name() == arg_name || "-" + arg.get__short_name() == arg_name );
     });
 

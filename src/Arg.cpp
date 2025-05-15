@@ -5,17 +5,13 @@
 #include <pthread.h>
 #include <string>
 
-Arg::Arg(const std::string& name) :
-    name_(name),
-    short_name_(""),
+Arg::Arg(std::string name) :
+    name_(std::move(name)),
     long_name_(this->name_),
-    help_(""),
     is_required_(false),
     is_flag_(false),
     accepts_many_(false),
-    env_name_(""),
     auto_env_(false),
-    default_value_(""),
     value_(std::nullopt)
 {}
 
@@ -66,10 +62,11 @@ void Arg::print_arg(std::ostream& os, const Arg& arg, int indent) {
     print_indent(os, indent + 1); os << "accepts_many: " << std::boolalpha << arg.accepts_many_ << ",\n";
     print_indent(os, indent + 1); os << "default: \"" << arg.default_value_ << "\",\n";
     print_indent(os, indent + 1); os << "value: ";
-    if (arg.value_)
+    if (arg.value_) {
         os << "\"" << arg.value_.value() << "\"";
-    else
+    } else {
         os << "std::nullopt";
+    }
     os << '\n';
 
     print_indent(os, indent); os << "}";

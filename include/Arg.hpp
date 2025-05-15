@@ -2,14 +2,14 @@
 
 #include "Macros.hpp"
 
-#include <ostream>
 #include <iostream>
 #include <optional>
+#include <ostream>
 #include <string>
 
 class Arg {
   public:
-    Arg(const std::string& name);
+    Arg(std::string name);
 
     Arg& short_name(const std::string& short_name);
     Arg& long_name(const std::string& long_name);
@@ -54,11 +54,11 @@ class Arg {
     
     // ----| Checkers |----
     // has_env_
-    [[nodiscard]] inline bool has_env() const { return !this->env_name_.empty(); }
+    [[nodiscard]]  bool has_env() const { return !this->env_name_.empty(); }
     
     // has_default_
-    [[nodiscard]] inline bool has_default() const { return !this->default_value_.empty(); }
+    [[nodiscard]]  bool has_default() const { return !this->default_value_.empty(); }
 
     // has_value_
-    [[nodiscard]] inline bool has_value() const { return this->value_.has_value(); }
+    [[nodiscard]]  bool has_value() const { return this->value_.has_value(); }
 };

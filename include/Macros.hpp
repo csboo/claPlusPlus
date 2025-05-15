@@ -17,7 +17,7 @@ struct Parse<TYPE> { \
     static std::optional<TYPE> parse(std::string_view s) { \
         char* end = nullptr; \
         TYPE value = CONVERT_FN(s.data(), &end); \
-        if (end == s.data() + s.size()) return value; \
+        if (end == s.data() + s.size()) { return value; }\
         return std::nullopt; \
     } \
 };

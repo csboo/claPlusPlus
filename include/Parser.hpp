@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Arg.hpp"
-#include "utils.hpp"
 #include "Parsables.hpp"
+#include "utils.hpp"
 
-#include <optional>
 #include <cstdlib>
 #include <iostream>
 #include <optional>
@@ -19,7 +18,7 @@ class ClapParser {
 
     template <typename T>
     requires Parseable<T>
-    inline std::optional<T> get_one_as(const std::string& name) {
+    std::optional<T> get_one_as(const std::string& name) {
         Arg* arg = ok_or(ClapParser::find_arg(*this, "--" + name), []{ return std::nullopt; });
         return Parse<T>::parse(arg->get__value().value());
     }
@@ -35,7 +34,6 @@ class ClapParser {
     static bool is_long_option(const std::string& token);
     static bool is_short_option(const std::string& token);
     static std::optional<Arg*> find_arg(ClapParser& parser, const std::string& name);
-    std::vector<Arg> get_positional_args() const;
     void apply_defaults();
 
     void parse_cli_args(const std::vector<std::string>& args);

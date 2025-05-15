@@ -2,10 +2,9 @@
 #include "Arg.hpp"
 #include "utils.hpp"
 
-#include <cstdlib>
 #include <iostream>
 
-void run(ClapParser& parsed_args);
+void run(ClapParser& arg_parser);
 
 int main(const int argc, char* argv[]) {
   ClapParser arg_parser;  
