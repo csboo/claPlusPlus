@@ -20,8 +20,6 @@ concept Parseable = requires(std::string_view s) {
 };
 
 // Integer types
-DEFINE_PARSABLE_BASIC_TYPE(long long)
-DEFINE_PARSABLE_BASIC_TYPE(unsigned long long)
 DEFINE_PARSABLE_BASIC_TYPE(int8_t)
 DEFINE_PARSABLE_BASIC_TYPE(uint8_t)
 DEFINE_PARSABLE_BASIC_TYPE(int16_t)
