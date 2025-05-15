@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Macros.hpp"
-
 #include <iostream>
 #include <optional>
 #include <ostream>
 #include <string>
 
+#include "Macros.hpp"
+
 class Arg {
-  public:
+   public:
     Arg(std::string name);
 
     Arg& short_name(const std::string& short_name);
@@ -24,7 +24,7 @@ class Arg {
     static void print_arg(std::ostream& os, const Arg& arg, int indent);
     friend std::ostream& operator<<(std::ostream& os, const Arg& arg);
 
-  private:
+   private:
     friend class ClapParser;
 
     std::string name_;

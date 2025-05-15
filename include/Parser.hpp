@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Arg.hpp"
-#include "Parsables.hpp"
-#include "utils.hpp"
-
 #include <cstdlib>
 #include <iostream>
 #include <optional>
 #include <string>
 #include <vector>
 
+#include "Arg.hpp"
+#include "Parsables.hpp"
+#include "utils.hpp"
+
 class ClapParser {
-  public:
+   public:
     void add_arg(const Arg& arg);
     void parse(const int& argc, char* argv[]);
     void print_help() const;
@@ -26,7 +26,7 @@ class ClapParser {
     static void print_parser(std::ostream& os, const ClapParser& parser, int indent);
     friend std::ostream& operator<<(std::ostream& os, const ClapParser& parser);
 
-  private:
+   private:
     std::vector<Arg> args_;
     std::string program_name_;
 

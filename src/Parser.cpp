@@ -1,6 +1,4 @@
 #include "Parser.hpp"
-#include "Arg.hpp"
-#include "utils.hpp"
 
 #include <algorithm>
 #include <cstddef>
@@ -9,6 +7,9 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+#include "Arg.hpp"
+#include "utils.hpp"
 
 void ClapParser::parse(const int& argc, char* argv[]) {
     const std::string& raw_program_name = argv[0];
@@ -23,7 +24,7 @@ void ClapParser::parse(const int& argc, char* argv[]) {
 
     this->apply_defaults();
     this->check_env();
-    this->parse_cli_args(args); // parse from cli (argc, argv)
+    this->parse_cli_args(args);  // parse from cli (argc, argv)
 
     // Validate all arguments that need values received them
     for (const auto& arg : args_) {
@@ -66,7 +67,7 @@ void ClapParser::parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std
             arg->set__value(value);
         } else {
             arg->set__value(args.at(cli_index + 1));
-            cli_index++; // Skip the value in the next iteration
+            cli_index++;  // Skip the value in the next iteration
         }
     } else {
         throw std::runtime_error("option '" + arg->get__name() + "' requires a value but none was provided");

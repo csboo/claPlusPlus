@@ -1,13 +1,20 @@
 #include "Arg.hpp"
-#include "utils.hpp"
+
+#include <pthread.h>
 
 #include <optional>
-#include <pthread.h>
 #include <string>
 
+#include "utils.hpp"
+
 Arg::Arg(std::string name)
-    : name_(std::move(name)), long_name_(this->name_), is_required_(false), is_flag_(false), accepts_many_(false),
-      auto_env_(false), value_(std::nullopt) {}
+    : name_(std::move(name)),
+      long_name_(this->name_),
+      is_required_(false),
+      is_flag_(false),
+      accepts_many_(false),
+      auto_env_(false),
+      value_(std::nullopt) {}
 
 // Setters
 Arg& Arg::short_name(const std::string& short_name) {

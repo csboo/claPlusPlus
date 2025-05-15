@@ -1,8 +1,8 @@
+#include <iostream>
+
 #include "Arg.hpp"
 #include "Parser.hpp"
 #include "utils.hpp"
-
-#include <iostream>
 
 void run(ClapParser& arg_parser);
 
