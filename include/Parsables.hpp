@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Macros.hpp"
-
 #include <charconv>
 #include <cstdint>
 #include <cstdlib>
@@ -9,12 +7,14 @@
 #include <string>
 #include <string_view>
 
-template<typename T>
+#include "Macros.hpp"
+
+template <typename T>
 struct Parse {
     static_assert(sizeof(T) == 0, "No Parse<T> specialization defined for this type");
 };
 
-template<typename T>
+template <typename T>
 concept Parseable = requires(std::string_view s) {
     { Parse<T>::parse(s) } -> std::convertible_to<std::optional<T>>;
 };
@@ -34,17 +34,15 @@ DEFINE_PARSABLE_FLOAT_TYPE(float, std::strtof)
 DEFINE_PARSABLE_FLOAT_TYPE(double, std::strtod)
 DEFINE_PARSABLE_FLOAT_TYPE(long double, std::strtold)
 
-template<>
+template <>
 struct Parse<std::string> {
-    static std::optional<std::string> parse(std::string_view s) {
-        return std::string(s.data());
-    }
+    static std::optional<std::string> parse(std::string_view s) { return std::string(s.data()); }
 };
 
-template<>
+template <>
 struct Parse<bool> {
     static std::optional<bool> parse(std::string_view s) {
-      auto as_int = Parse<int>::parse(s).value();
-      return as_int;
+        auto as_int = Parse<int>::parse(s).value();
+        return as_int;
     }
 };

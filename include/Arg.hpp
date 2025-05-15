@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Macros.hpp"
-
-#include <ostream>
 #include <iostream>
 #include <optional>
+#include <ostream>
 #include <string>
 
+#include "Macros.hpp"
+
 class Arg {
-  public:
-    Arg(const std::string& name);
+   public:
+    Arg(std::string name);
 
     Arg& short_name(const std::string& short_name);
     Arg& long_name(const std::string& long_name);
@@ -24,7 +24,7 @@ class Arg {
     static void print_arg(std::ostream& os, const Arg& arg, int indent);
     friend std::ostream& operator<<(std::ostream& os, const Arg& arg);
 
-  private:
+   private:
     friend class ClapParser;
 
     std::string name_;
@@ -51,14 +51,14 @@ class Arg {
     DEFINE_GETTER_SETTER(auto_env, bool)
     DEFINE_GETTER_SETTER(default_value, std::string)
     DEFINE_GETTER_SETTER(value, std::optional<std::string>)
-    
+
     // ----| Checkers |----
     // has_env_
-    [[nodiscard]] inline bool has_env() const { return !this->env_name_.empty(); }
-    
+    [[nodiscard]] bool has_env() const { return !this->env_name_.empty(); }
+
     // has_default_
-    [[nodiscard]] inline bool has_default() const { return !this->default_value_.empty(); }
+    [[nodiscard]] bool has_default() const { return !this->default_value_.empty(); }
 
     // has_value_
-    [[nodiscard]] inline bool has_value() const { return this->value_.has_value(); }
+    [[nodiscard]] bool has_value() const { return this->value_.has_value(); }
 };

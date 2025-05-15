@@ -1,0 +1,109 @@
+Checks:
+  abseil-*,
+  altera-*,
+  android-*,
+  bugprone-*,
+  cert-*,
+  clang-*analyzer-*,
+  concurrency-*,
+  cppcoreguidelines-*,
+  darwin-*,
+  fuchsia-*,
+  google-*,
+  hicpp-*,
+  linuxkernel-*,
+  llvm-*,
+  misc-*,
+  modernize-*,
+  mpi-*,
+  objc-*,
+  openmp-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  zircon-*,
+  -boost-*,
+  -llvmlibc-*,
+  -altera-unroll-loops,
+  -hicpp-vararg,
+  -hicpp-signed-bitwise,
+  -hicpp-no-array-decay,
+  -hicpp-explicit-conversions,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-avoid-do-while,
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -google-readability-todo,
+  -google-explicit-constructor,
+  -google-build-using-namespace,
+  -fuchsia-overloaded-operator,
+  -fuchsia-statically-constructed-objects,
+  -fuchsia-default-arguments-declarations,
+  -fuchsia-default-arguments-calls,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  -altera-struct-pack-align,
+  -misc-non-private-member-variables-in-classes,
+  -misc-use-anonymous-namespace,
+  -misc-use-internal-linkage,
+  -concurrency-mt-unsafe,
+  -cert-env33-c,
+  -cert-err58-cpp,
+  -bugprone-easily-swappable-parameters,
+
+  # -abseil-cleanup-ctad
+  # -abseil-duration-addition
+  # -abseil-duration-comparison
+  # -abseil-duration-conversion-cast
+  # -abseil-duration-division
+  # -abseil-duration-factory-float
+  # -abseil-duration-factory-scale
+  # -abseil-duration-subtraction
+  # -abseil-duration-unnecessary-conversion
+  # -abseil-faster-strsplit-delimiter
+  # -abseil-no-internal-dependencies
+  # -abseil-no-namespace
+  # -abseil-redundant-strcat-calls
+  # -abseil-str-cat-append
+  # -abseil-string-find-startswith
+  # -abseil-string-find-str-contains
+  # -abseil-time-comparison
+  # -abseil-time-subtraction
+  # -abseil-upgrade-duration-conversions
+  # -altera-id-dependent-backward-branch
+  # -altera-struct-pack-align
+  # -altera-unroll-loops
+  # -bugprone-easily-swappable-parameters
+  # -cppcoreguidelines-avoid-c-arrays
+  # -cppcoreguidelines-avoid-magic-numbers
+  # -cppcoreguidelines-avoid-non-const-global-variables
+  # -cppcoreguidelines-pro-bounds-array-to-pointer-decay
+  # -cppcoreguidelines-pro-bounds-constant-array-index
+  # -cppcoreguidelines-pro-bounds-pointer-arithmetic
+  # -cppcoreguidelines-special-member-functions
+  # -fuchsia-default-arguments-calls
+  # -fuchsia-default-arguments-declarations
+  # -fuchsia-overloaded-operator
+  # -fuchsia-trailing-return
+  # -google-default-arguments
+  # -google-explicit-constructor
+  # -google-global-names-in-headers
+  # -google-objc-function-naming
+  # -google-objc-global-variable-declaration
+  # -google-runtime-int
+  # -hicpp-avoid-c-arrays
+  # -hicpp-explicit-conversions
+  # -hicpp-no-array-decay
+  # -hicpp-special-member-functions
+  # -llvmlibc-callee-namespace
+  # -llvmlibc-implementation-in-namespace
+  # -llvmlibc-restrict-system-libc-headers
+  # -modernize-avoid-c-arrays
+  # -modernize-use-nodiscard
+  # -modernize-use-trailing-return-type
+  # -readability-identifier-length
+  # -readability-isolate-declaration
+  # -readability-magic-numbers
