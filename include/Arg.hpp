@@ -1,22 +1,22 @@
 #pragma once
 
-#include "utils.hpp"
-
-#include <cerrno>
-#include <ostream>
 #include <iostream>
 #include <optional>
+#include <ostream>
 #include <string>
 
+#include "Macros.hpp"
+
 class Arg {
-  public:
-    Arg(const std::string& name);
+   public:
+    Arg(std::string name);
 
     Arg& short_name(const std::string& short_name);
     Arg& long_name(const std::string& long_name);
     Arg& help(const std::string& help);
     Arg& required(bool is_required);
     Arg& is_flag();
+    Arg& accepts_many();
     Arg& default_value(const std::string& default_val);
     Arg& from_env(const char* env_var_name);
     Arg& auto_env();
@@ -24,7 +24,7 @@ class Arg {
     static void print_arg(std::ostream& os, const Arg& arg, int indent);
     friend std::ostream& operator<<(std::ostream& os, const Arg& arg);
 
-  private:
+   private:
     friend class ClapParser;
 
     std::string name_;
@@ -33,114 +33,32 @@ class Arg {
     std::string help_;
     bool is_required_;
     bool is_flag_;
+    bool accepts_many_;
     std::string env_name_;
     bool auto_env_;
-    // std::string auto_env_name_;
     std::string default_value_;
     std::optional<std::string> value_;
 
     // ----| Getters & Setters |----
-    // name_
-    [[nodiscard]] inline const std::string& get__name() const {
-      return this->name_;
-    }
-    inline void set__name(const std::string& name) {
-      this->name_ = name;
-    }
-
-    // short_
-    [[nodiscard]] inline const std::string& get__short_name() const {
-      return this->short_name_;
-    }
-    inline void set__short_name(const std::string& short_name) {
-      this->short_name_ = short_name;
-    }
-
-    // long_
-    [[nodiscard]] inline const std::string& get__long_name() const {
-      return this->long_name_;
-    }
-    inline void set__long_name(const std::string& long_name) {
-      this->long_name_ = long_name;
-    }
-
-    // help_
-    [[nodiscard]] inline const std::string& get__help() const {
-      return this->help_;
-    }
-    inline void set__help(const std::string& help) {
-      this->help_ = help;
-    }
-
-    // required_
-    [[nodiscard]] inline bool get__is_required() const {
-      return this->is_required_;
-    }
-    inline void set__is_required(const bool& is_required) {
-      this->is_required_ = is_required;
-    }
-
-    // takes_value_
-    [[nodiscard]] inline bool get__is_flag() const {
-      return this->is_flag_;
-    }
-    inline void set__is_flag(const bool& takes_value) {
-      this->is_flag_ = takes_value;
-    }
-
-    // env_name_
-    [[nodiscard]] inline const std::string& get__env_name() const {
-      return this->env_name_;
-    }
-    inline void set__env_name(const std::string& env_name) {
-      this->env_name_ = env_name;
-    }
-
-    // auto_env_
-    [[nodiscard]] inline bool get__auto_env() const {
-      return this->auto_env_;
-    }
-    inline void set__auto_env(const bool& auto_env) {
-      this->auto_env_ = auto_env;
-    }
-
-    // auto_env_name_
-    // [[nodiscard]] inline const std::string get__auto_env_name() const {
-    //   std::string env_name = PROGRAM_NAME() + '_' + this->get__name();
-    //   std::transform(env_name.begin(), env_name.end(), env_name.begin(), [](const unsigned char& c) { return std::toupper(c); });
-    //   return env_name;
-    // }
-
-    // default_
-    [[nodiscard]] inline const std::string& get__default_value() const {
-      return this->default_value_;
-    }
-    inline void set__default_value(const std::string& default_value) {
-      this->default_value_ = default_value;
-    }
-
-    // value_
-    [[nodiscard]] inline const std::optional<std::string> get__value() const {
-      return this->value_;
-    }
-    inline void set__value(const std::string& value) {
-      this->value_ = value;
-    }
+    DEFINE_GETTER_SETTER(name, std::string)
+    DEFINE_GETTER_SETTER(short_name, std::string)
+    DEFINE_GETTER_SETTER(long_name, std::string)
+    DEFINE_GETTER_SETTER(help, std::string)
+    DEFINE_GETTER_SETTER(is_required, bool)
+    DEFINE_GETTER_SETTER(is_flag, bool)
+    DEFINE_GETTER_SETTER(accepts_many, bool)
+    DEFINE_GETTER_SETTER(env_name, std::string)
+    DEFINE_GETTER_SETTER(auto_env, bool)
+    DEFINE_GETTER_SETTER(default_value, std::string)
+    DEFINE_GETTER_SETTER(value, std::optional<std::string>)
 
     // ----| Checkers |----
     // has_env_
-    [[nodiscard]] inline bool has_env() const {
-      return !this->env_name_.empty();
-    }
+    [[nodiscard]] bool has_env() const { return !this->env_name_.empty(); }
 
     // has_default_
-    [[nodiscard]] inline bool has_default() const {
-      return !this->default_value_.empty();
-    }
+    [[nodiscard]] bool has_default() const { return !this->default_value_.empty(); }
 
     // has_value_
-    [[nodiscard]] inline bool has_value() const {
-      return this->value_.has_value();
-    }
-
+    [[nodiscard]] bool has_value() const { return this->value_.has_value(); }
 };
