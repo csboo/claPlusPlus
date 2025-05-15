@@ -17,6 +17,7 @@ class Arg {
     Arg& help(const std::string& help);
     Arg& required(bool is_required);
     Arg& is_flag();
+    Arg& accepts_many();
     Arg& default_value(const std::string& default_val);
     Arg& from_env(const char* env_var_name);
     Arg& auto_env();
@@ -33,6 +34,7 @@ class Arg {
     std::string help_;
     bool is_required_;
     bool is_flag_;
+    bool accepts_many_;
     std::string env_name_;
     bool auto_env_;
     // std::string auto_env_name_;
@@ -80,7 +82,7 @@ class Arg {
       this->is_required_ = is_required;
     }
 
-    // takes_value_
+    // is_flag_
     [[nodiscard]] inline bool get__is_flag() const {
       return this->is_flag_;
     }
@@ -88,6 +90,14 @@ class Arg {
       this->is_flag_ = takes_value;
     }
 
+    // accepts_many_
+    [[nodiscard]] inline bool get__accepts_many() const {
+      return this->accepts_many_;
+    }
+    inline void set__accepts_many(const bool& accepts_many) {
+      this->accepts_many_ = accepts_many;
+    }
+    
     // env_name_
     [[nodiscard]] inline const std::string& get__env_name() const {
       return this->env_name_;

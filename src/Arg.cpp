@@ -12,6 +12,7 @@ Arg::Arg(const std::string& name) :
     help_(""),
     is_required_(false),
     is_flag_(false),
+    accepts_many_(false),
     env_name_(""),
     auto_env_(false),
     default_value_(""),
@@ -31,9 +32,13 @@ Arg& Arg::required(bool is_required) {
     is_required_ = is_required;
     return *this;
 }
-Arg& Arg::is_flag()  {
+Arg& Arg::is_flag() {
     is_flag_ = true;
     default_value_ = "0";
+    return *this;
+}
+Arg& Arg::accepts_many() {
+    accepts_many_ = true;
     return *this;
 }
 Arg& Arg::default_value(const std::string& default_value) {
@@ -69,6 +74,7 @@ void Arg::print_arg(std::ostream& os, const Arg& arg, int indent) {
     print_indent(os, indent + 1); os << "help: \"" << arg.help_ << "\",\n";
     print_indent(os, indent + 1); os << "required: " << std::boolalpha << arg.is_required_ << ",\n";
     print_indent(os, indent + 1); os << "is_flag: " << std::boolalpha << arg.is_flag_ << ",\n";
+    print_indent(os, indent + 1); os << "accepts_many: " << std::boolalpha << arg.accepts_many_ << ",\n";
     print_indent(os, indent + 1); os << "default: \"" << arg.default_value_ << "\",\n";
     print_indent(os, indent + 1); os << "value: ";
     if (arg.value_)

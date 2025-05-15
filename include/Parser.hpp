@@ -6,7 +6,6 @@
 #include <iostream>
 #include <optional>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 class ClapParser {
@@ -30,19 +29,19 @@ class ClapParser {
     friend std::ostream& operator<<(std::ostream& os, const ClapParser& parser);
   private:
     std::vector<Arg> args_;
-    std::unordered_map<std::string, std::string> values_;
     std::string program_name_;
 
     // Helper methods
-    inline bool is_option(const std::string& token) const ;
-    inline bool is_long_option(const std::string& token) const ;
-    inline bool is_short_option(const std::string& token) const ;
+    static bool is_option(const std::string& token);
+    static bool is_long_option(const std::string& token);
+    static bool is_short_option(const std::string& token);
     static std::optional<Arg*> find_arg(ClapParser& parser, const std::string& name);
     std::vector<Arg> get_positional_args() const;
     void apply_defaults();
 
-    void parse_options(const std::vector<std::string>& args);
+    void parse_cli_args(const std::vector<std::string>& args);
     void check_env();
     void parse_positional_args(const std::vector<std::string>& args);
+    static void parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args);
     void handle_missing_positional(const Arg& arg);
 };
