@@ -37,21 +37,26 @@ void ClapParser::parse(const int& argc, char* argv[]) {
 
 void ClapParser::add_arg(const Arg& arg) { args_.emplace_back(arg); }
 
-void ClapParser::parse_cli_args(const std::vector<std::string>& args) {
+void ClapParser::parse_cli_args(std::vector<std::string>& args) {
     for (size_t i = 0; i < args.size(); ++i) {
-        const auto& token = args.at(i);
+        std::string token = args.at(i);
 
+        // TODO this could be better with string view contains?
         if (token == "--help" || token == "-h") {
             print_help();
             exit(0);
         }
 
-        auto* arg = ok_or_throw_str(ClapParser::find_arg(*this, token), "unknown option: \'" + token);
+        // solve --opt="value" stuff
+        ClapParser::analyze_token(token, i, args);
+
+
+        auto* arg = ok_or_throw_str(ClapParser::find_arg(*this, token), "unknown option: " + quote(token));
 
         if (!arg->get__is_flag()) {
             ClapParser::parse_value_for_non_flag(arg, i, args);
         } else {
-            arg->set__value("1");
+            ClapParser::parse_value_for_flag(arg, i, args);
         }
     }
 }
@@ -71,6 +76,42 @@ void ClapParser::parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std
         }
     } else {
         throw std::runtime_error("option '" + arg->get__name() + "' requires a value but none was provided");
+    }
+}
+
+void ClapParser::parse_value_for_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args) {
+    if (cli_index + 1 < args.size() && !is_option(args.at(cli_index + 1))) {
+        if (args.at(cli_index + 1) == "true" || args.at(cli_index + 1) == "1") {
+            arg->set__value("1");
+            cli_index++;
+        } else if (args.at(cli_index + 1) == "false" || args.at(cli_index + 1) == "0") {
+            arg->set__value("0");
+            cli_index++;
+        } else {
+            throw std::runtime_error("boolean option " + quote(arg->get__name()) + " strictly takes: true|false|1|0 (got: " + args.at(cli_index + 1) + ")");
+        }
+    } else {
+        arg->set__value("1");
+    }
+}
+
+void ClapParser::analyze_token(std::string& token, size_t& cli_index, std::vector<std::string>& args) {
+    if (token.contains('=')) {
+        std::cerr << "'=' found, separating token ( ";
+        const auto middle = token.find('=');
+
+        std::string token_name = token.substr(0, middle);
+        std::string token_value = token.substr(middle + 1);
+        if (token_value.empty()) {
+            throw std::runtime_error("value not specified after '='");
+        }
+
+        args.at(cli_index) = token_value;
+        cli_index--;
+        
+        token = token_name;
+    } else {
+        std::cerr << "ending token analysis, left alone\n";
     }
 }
 

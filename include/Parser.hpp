@@ -40,8 +40,10 @@ class ClapParser {
     static std::optional<Arg*> find_arg(ClapParser& parser, const std::string& name);
     void apply_defaults();
 
-    void parse_cli_args(const std::vector<std::string>& args);
+    void parse_cli_args(std::vector<std::string>& args);
     void check_env();
     void parse_positional_args(const std::vector<std::string>& args);
     static void parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args);
+    static void parse_value_for_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args);
+    static void analyze_token(std::string& token, size_t& cli_index, std::vector<std::string>& args);
 };
