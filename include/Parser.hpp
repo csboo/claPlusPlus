@@ -20,7 +20,10 @@ class ClapParser {
         requires Parseable<T>
     std::optional<T> get_one_as(const std::string& name) {
         Arg* arg = ok_or(ClapParser::find_arg(*this, "--" + name), [] { return std::nullopt; });
-        return Parse<T>::parse(arg->get__value().value());
+        
+        return Parse<T>::parse(
+            ok_or_throw_str(arg->get__value(), "value for option: " + quote(arg->get__name()) + " is missing")
+        );
     }
 
     static void print_parser(std::ostream& os, const ClapParser& parser, int indent);
