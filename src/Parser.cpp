@@ -38,8 +38,16 @@ void ClapParser::parse(const int& argc, char* argv[]) {
 void ClapParser::add_arg(const Arg& arg) { args_.emplace_back(arg); }
 
 void ClapParser::parse_cli_args(std::vector<std::string>& args) {
+    // std::cerr << "\nstart cli arg parsing\n";
+    // std::cerr << "args vector: [";
+    // for (const auto& i : args) {
+    //     std::cerr << quote(i) << " ";
+    // }
+    // std::cerr << "]\n";
+
     for (size_t i = 0; i < args.size(); ++i) {
         std::string token = args.at(i);
+        // std::cerr << "\ngoing through args: size=" << args.size() << ", current token=" << quote(token) << ", index=" << i << "\n";
 
         // TODO this could be better with string view contains?
         if (token == "--help" || token == "-h") {
@@ -49,19 +57,29 @@ void ClapParser::parse_cli_args(std::vector<std::string>& args) {
 
         // solve --opt="value" stuff
         ClapParser::analyze_token(token, i, args);
+        // std::cerr << "args vector AGAIN: [";
+        // for (const auto& i : args) {
+            // std::cerr << quote(i) << " ";
+        // }
+        // std::cerr << "]\n";
 
 
         auto* arg = ok_or_throw_str(ClapParser::find_arg(*this, token), "unknown option: " + quote(token));
 
         if (!arg->get__is_flag()) {
+            // std::cerr << "\nparsing non-flag\n";
             ClapParser::parse_value_for_non_flag(arg, i, args);
         } else {
+            // std::cerr << "\nparsing flag\n";
             ClapParser::parse_value_for_flag(arg, i, args);
         }
     }
+    std::cerr << "cli arg parsing done\n";
+    std::cerr << *this << "\n";
 }
 
 void ClapParser::parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args) {
+    // std::cerr << "\ncli_ind, and arg size: " << cli_index << " " << args.size() << "\n";
     if (cli_index + 1 < args.size() && !is_option(args.at(cli_index + 1))) {
         if (arg->get__accepts_many()) {
             std::string value;
@@ -69,8 +87,10 @@ void ClapParser::parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std
                 value += args.at(cli_index + 1) + ' ';
                 cli_index++;
             }
+            // std::cerr << "value " << value << "\n";
             arg->set__value(value);
         } else {
+            // std::cerr << "value " << args.at(cli_index + 1) << "\n";
             arg->set__value(args.at(cli_index + 1));
             cli_index++;  // Skip the value in the next iteration
         }
@@ -80,38 +100,56 @@ void ClapParser::parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std
 }
 
 void ClapParser::parse_value_for_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args) {
+    // std::cerr << "\ncli_ind, and arg size: " << cli_index << " " << args.size() << "\n";
     if (cli_index + 1 < args.size() && !is_option(args.at(cli_index + 1))) {
+        // std::cerr << "found flag with value in cli value: (";
         if (args.at(cli_index + 1) == "true" || args.at(cli_index + 1) == "1") {
+            // std::cerr << args.at(cli_index + 1) << ")\n";
             arg->set__value("1");
             cli_index++;
         } else if (args.at(cli_index + 1) == "false" || args.at(cli_index + 1) == "0") {
+            // std::cerr << args.at(cli_index + 1) << ")\n";
             arg->set__value("0");
             cli_index++;
         } else {
+            // std::cerr << "WRONG VALUE, throwing\n";
             throw std::runtime_error("boolean option " + quote(arg->get__name()) + " strictly takes: true|false|1|0 (got: " + args.at(cli_index + 1) + ")");
         }
     } else {
+        // std::cerr << "no value for flag, fallback to 1\n";
         arg->set__value("1");
     }
 }
 
 void ClapParser::analyze_token(std::string& token, size_t& cli_index, std::vector<std::string>& args) {
+    // std::cerr << "\nstarting token analysis for: " << quote(token) << "\n";
+    // std::cerr << "[WARNING]: might mess up arg vector!\n";
     if (token.contains('=')) {
-        std::cerr << "'=' found, separating token ( ";
+        // std::cerr << "'=' found, separating token ( ";
         const auto middle = token.find('=');
 
         std::string token_name = token.substr(0, middle);
+        // std::cerr << "name: " << quote(token_name) << ", ";
         std::string token_value = token.substr(middle + 1);
         if (token_value.empty()) {
             throw std::runtime_error("value not specified after '='");
         }
+        // std::cerr << "value: " << quote(token_value) << " )\n";
 
         args.at(cli_index) = token_value;
+        // std::cerr << "TEST: " << cli_index << "\n";
         cli_index--;
         
+        // std::cerr << "args vector: [";
+        // for (const auto& i : args) {
+        //     std::cerr << quote(i) << " ";
+        // }
+        // std::cerr << "]\n";
+
+        // std::cerr << "ending token analysis\n";
         token = token_name;
     } else {
-        std::cerr << "ending token analysis, left alone\n";
+        // std::cerr << "ending token analysis, left alone\n";
     }
 }
 
