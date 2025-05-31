@@ -1,27 +1,23 @@
 #pragma once
 
-#define DEFINE_PARSABLE_BASIC_TYPE(TYPE)                                            \
+#define DEFINE_PARSABLE_INTEGER_TYPE(TYPE)                                          \
     template <>                                                                     \
     struct Parse<TYPE> {                                                            \
         static std::optional<TYPE> parse(std::string_view s) {                      \
-            TYPE value;                                                             \
+            TYPE value = 0;                                                             \
             auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value); \
-            if (ec == std::errc()) return value;                                    \
-            return std::nullopt;                                                    \
+            return ec == std::errc() ? std::nullopt : std::optional{value};         \
         }                                                                           \
     };
 
-#define DEFINE_PARSABLE_FLOAT_TYPE(TYPE, CONVERT_FN)           \
-    template <>                                                \
-    struct Parse<TYPE> {                                       \
-        static std::optional<TYPE> parse(std::string_view s) { \
-            char* end = nullptr;                               \
-            TYPE value = CONVERT_FN(s.data(), &end);           \
-            if (end == s.data() + s.size()) {                  \
-                return value;                                  \
-            }                                                  \
-            return std::nullopt;                               \
-        }                                                      \
+#define DEFINE_PARSABLE_FLOAT_TYPE(TYPE)                                                                           \
+    template <>                                                                                                    \
+    struct Parse<TYPE> {                                                                                           \
+        static std::optional<TYPE> parse(std::string_view s) {                                                     \
+            TYPE value = 0;                                                                                            \
+            auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value, std::chars_format::scientific); \
+            return ec == std::errc() ? std::nullopt : std::optional{value};                                        \
+        }                                                                                                          \
     };
 
 #define DEFINE_GETTER_SETTER(NAME, TYPE)                                           \
