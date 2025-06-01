@@ -10,14 +10,15 @@ project('claplusplus', 'cpp',
 )
 
 # Add include directory for headers
-include_dir = include_directories('include')
+include_dir = include_directories('include', 'include/arg')
 
 # Build executable directly from all necessary sources
 executable('claPlusPlus',
   sources: [
     'src/example.cpp',
     'src/Arg.cpp',
-    'src/Parser.cpp'
+    'src/Parser.cpp',
+    'src/BaseArg.cpp'
   ],
   include_directories: include_dir,
   install: false

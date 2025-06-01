@@ -20,23 +20,23 @@ concept Parseable = requires(std::string_view s) {
 };
 
 // Integer types
-DEFINE_PARSABLE_BASIC_TYPE(int8_t)
-DEFINE_PARSABLE_BASIC_TYPE(uint8_t)
-DEFINE_PARSABLE_BASIC_TYPE(int16_t)
-DEFINE_PARSABLE_BASIC_TYPE(uint16_t)
-DEFINE_PARSABLE_BASIC_TYPE(int32_t)
-DEFINE_PARSABLE_BASIC_TYPE(uint32_t)
-DEFINE_PARSABLE_BASIC_TYPE(int64_t)
-DEFINE_PARSABLE_BASIC_TYPE(uint64_t)
+DEFINE_PARSABLE_INTEGER_TYPE(int8_t)
+DEFINE_PARSABLE_INTEGER_TYPE(uint8_t)
+DEFINE_PARSABLE_INTEGER_TYPE(int16_t)
+DEFINE_PARSABLE_INTEGER_TYPE(uint16_t)
+DEFINE_PARSABLE_INTEGER_TYPE(int32_t)
+DEFINE_PARSABLE_INTEGER_TYPE(uint32_t)
+DEFINE_PARSABLE_INTEGER_TYPE(int64_t)
+DEFINE_PARSABLE_INTEGER_TYPE(uint64_t)
 
 // Floating-point types
-DEFINE_PARSABLE_FLOAT_TYPE(float, std::strtof)
-DEFINE_PARSABLE_FLOAT_TYPE(double, std::strtod)
-DEFINE_PARSABLE_FLOAT_TYPE(long double, std::strtold)
+DEFINE_PARSABLE_FLOAT_TYPE(float)
+DEFINE_PARSABLE_FLOAT_TYPE(double)
+DEFINE_PARSABLE_FLOAT_TYPE(long double)
 
 template <>
 struct Parse<std::string> {
-    static std::optional<std::string> parse(std::string_view s) { return std::string(s.data()); }
+    static std::optional<std::string> parse(std::string_view s) { return std::string(s.data(), s.data() + s.size()); }
 };
 
 template <>
