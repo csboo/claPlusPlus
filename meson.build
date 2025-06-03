@@ -16,7 +16,6 @@ include_dir = include_directories('include', 'include/arg')
 executable('claPlusPlus',
   sources: [
     'src/example.cpp',
-    'src/Arg.cpp',
     'src/Parser.cpp',
     'src/BaseArg.cpp'
   ],
@@ -25,7 +24,7 @@ executable('claPlusPlus',
 )
 
 parser_lib = static_library('clap_parser', 
-  sources: ['src/Parser.cpp', 'src/Arg.cpp'],
+  sources: ['src/Parser.cpp', 'src/BaseArg.cpp'],
   include_directories: include_dir,
   install: false
 )
