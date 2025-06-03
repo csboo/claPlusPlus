@@ -2,7 +2,6 @@
 
 #include <charconv>
 #include <cstdint>
-#include <cstdlib>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -42,7 +41,6 @@ struct Parse<std::string> {
 template <>
 struct Parse<bool> {
     static std::optional<bool> parse(std::string_view s) {
-        auto as_int = Parse<int>::parse(s).value();
-        return as_int;
+        return Parse<int>::parse(s);
     }
 };
