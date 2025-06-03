@@ -56,6 +56,11 @@ void ClapParser::parse_cli_args(std::vector<std::string>& args) {
 
         // solve --opt="value" stuff
         ClapParser::analyze_token(token, i, args);
+        if (token.starts_with("--")) {
+            token = token.substr(2);
+        } else if (token.starts_with("-")) {
+            token = token.substr(1);
+        }
         // std::cerr << "args vector AGAIN: [";
         // for (const auto& i : args) {
             // std::cerr << quote(i) << " ";
@@ -212,7 +217,7 @@ void ClapParser::print_help() const {
 // Helper methods
 std::optional<BaseArg*> ClapParser::find_arg(ClapParser& parser, const std::string& arg_name) {
     auto it = std::ranges::find_if(parser.args_, [&](std::unique_ptr<BaseArg>& arg) {
-        return ("--" + arg->get__long_name() == arg_name || "-" + arg->get__short_name() == arg_name);
+        return (arg->get__long_name() == arg_name || arg->get__short_name() == arg_name);
     });
 
     if (it == parser.args_.end()) {
