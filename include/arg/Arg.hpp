@@ -15,20 +15,6 @@
 struct NotSet {};
 struct Set {};
 
-// sth
-template<typename...>
-struct CountMismatches;
-
-template<typename T1, typename T2, typename... Rest>
-struct CountMismatches<T1, T2, Rest...> {
-    static constexpr int value = (!std::is_same_v<T1, T2>) + CountMismatches<Rest...>::value;
-};
-
-template<>
-struct CountMismatches<> {
-    static constexpr int value = 0;
-};
-
 // === Builder class with full type-state enforcement ===
 template <typename ShortName = NotSet, typename LongName = NotSet, typename Help = NotSet, typename IsRequired = NotSet,
           typename IsFlag = NotSet, typename AcceptsMany = NotSet, typename DefaultValue = NotSet,
@@ -50,27 +36,19 @@ class Arg final : public BaseArg {
              typename AM, typename DV, typename FE, typename AE>
     friend class Arg;
 
-    template<typename OSN, typename OLN, typename OH, typename OIR, typename OIF,
-             typename OAM, typename ODV, typename OFE, typename OAE>
-    Arg(const Arg<OSN, OLN, OH, OIR, OIF, OAM, ODV, OFE, OAE>& other) requires (CountMismatches<
-                     ShortName, OSN,
-                     LongName, OLN,
-                     Help, OH,
-                     IsRequired, OIR,
-                     IsFlag, OIF,
-                     AcceptsMany, OAM,
-                     DefaultValue, ODV,
-                     FromEnv, OFE,
-                     AutoEnv, OAE
-                 >::value == 1) {
-        name_ = other.name_;
-        long_name_ = other.long_name_;
-        help_ = other.help_;
-        is_required_ = other.is_required_;
-        is_flag_ = other.is_flag_;
-        accepts_many_ = other.accepts_many_;
-        value_ = other.value_;
-        auto_env_ = other.auto_env_;
+    template<typename... States>
+    Arg(const Arg<States...>& other) {
+        // name_ = std::move(other.name_);
+        short_name_ = std::move(other.short_name_);
+        long_name_ = std::move(other.long_name_);
+        help_ = std::move(other.help_);
+        is_required_ = std::move(other.is_required_);
+        is_flag_ = std::move(other.is_flag_);
+        default_value_ = std::move(other.default_value_);
+        accepts_many_ = std::move(other.accepts_many_);
+        value_ = std::move(other.value_);
+        auto_env_ = std::move(other.auto_env_);
+        env_name_ = std::move(other.env_name_);
     }
 
     ARG_USER_CUSTOM_FUNCTION_SAFE(short_name, std::string, ShortName, "Error: don't call short_name() more than once!",
