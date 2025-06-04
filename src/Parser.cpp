@@ -224,6 +224,9 @@ std::optional<BaseArg*> ClapParser::find_arg(ClapParser& parser, const std::stri
 
 void ClapParser::apply_defaults() {
     for (auto& arg : args_) {
+        if (arg->get__is_flag() && !arg->has_default()) {
+            arg->set__default_value("0"); // flags are false by default always
+        }
         if (!arg->has_value() && arg->has_default()) {
             arg->set__value(arg->get__default_value());
         }
