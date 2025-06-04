@@ -78,8 +78,8 @@ void ClapParser::parse_cli_args(std::vector<std::string>& args) {
             ClapParser::parse_value_for_flag(arg, i, args);
         }
     }
-    std::cerr << "cli arg parsing done\n";
-    std::cerr << *this << "\n";
+    // std::cerr << "cli arg parsing done\n";
+    // std::cerr << *this << "\n";
 }
 
 void ClapParser::parse_value_for_non_flag(BaseArg* arg, size_t& cli_index, const std::vector<std::string>& args) {
