@@ -9,7 +9,7 @@
 
 int main(int argc, char* argv[]) {
     ClapParser p;
-    auto f = Arg("opt").is_flag();
+    auto f = Arg().long_name("opt").is_flag();
     p.add_arg(f);
     p.parse(argc, argv);
 
