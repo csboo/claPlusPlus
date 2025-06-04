@@ -30,6 +30,7 @@
 
 #define ARG_USER_BOOL_FUNCTION_SAFE(NAME, TARGET_STATE, VALUE, ERROR_MSG, ...) \
     [[nodiscard]] inline auto NAME() {                             \
+        static_assert(std ::is_same_v<LongName, Set>, "Error: I need a name! [.long_name(), .short_name()]"); \
         static_assert(std::is_same_v<TARGET_STATE, NotSet>, ERROR_MSG);        \
         this->NAME##_ = VALUE;                                                 \
         Arg<__VA_ARGS__> next = std::move(*this);                                         \
@@ -44,4 +45,11 @@
         return next;                                                            \
     }
 
+#define ARG_USER_CUSTOM_FUNCTION_SAFE_ISNAMED(NAME, TYPE, TARGET_STATE, ERROR_MSG, ...) \
+    [[nodiscard]] inline auto NAME(TYPE NAME) {               \
+        static_assert(std ::is_same_v<LongName, Set>, "Error: I need a name! [.long_name(), .short_name()]"); \
+        static_assert(std::is_same_v<TARGET_STATE, NotSet>, ERROR_MSG);         \
+        this->NAME##_ = std::move(NAME);                                        \
+        Arg<__VA_ARGS__> next = *this;                                          \
+        return next;                                                            \
     }

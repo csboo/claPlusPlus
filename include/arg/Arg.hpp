@@ -2,14 +2,12 @@
 
 #include <algorithm>
 #include <iostream>
-#include <memory>
 #include <optional>
 #include <ostream>
 #include <string>
 
-#include "Macros.hpp"
 #include "BaseArg.hpp"
-#include "utils.hpp"
+#include "Macros.hpp"
 
 // === Type state flags ===
 struct NotSet {};
@@ -43,30 +41,30 @@ class Arg final : public BaseArg {
         env_name_ = std::move(other.env_name_);
     }
 
-    ARG_USER_CUSTOM_FUNCTION_SAFE(short_name, std::string, ShortName, "Error: don't call short_name() more than once!",
-                                  Set, LongName, Help, IsRequired, IsFlag, AcceptsMany, DefaultValue, FromEnv,
-                                  AutoEnv)
     ARG_USER_CUSTOM_FUNCTION_SAFE(long_name, std::string, LongName, "Error: don't call long_name() more than once!",
                                   ShortName, Set, Help, IsRequired, IsFlag, AcceptsMany, DefaultValue, FromEnv,
                                   AutoEnv)
-    ARG_USER_CUSTOM_FUNCTION_SAFE(help, std::string, Help, "Error: don't call help() more than once!", ShortName,
+    ARG_USER_CUSTOM_FUNCTION_SAFE_ISNAMED(short_name, std::string, ShortName, "Error: don't call short_name() more than once!",
+                                  Set, LongName, Help, IsRequired, IsFlag, AcceptsMany, DefaultValue, FromEnv,
+                                  AutoEnv)
+    ARG_USER_CUSTOM_FUNCTION_SAFE_ISNAMED(help, std::string, Help, "Error: don't call help() more than once!", ShortName,
                                   LongName, Set, IsRequired, IsFlag, AcceptsMany, DefaultValue, FromEnv, AutoEnv)
-    ARG_USER_BOOL_FUNCTION_SAFE(is_required, IsRequired, true, "Error: don't call is_required() more than once!",
-                                ShortName, LongName, Help, Set, IsFlag, AcceptsMany, DefaultValue, FromEnv,
-                                AutoEnv)
+    ARG_USER_BOOL_FUNCTION_SAFE(is_required, IsRequired, true, "Error: don't call is_required() more than once!", ShortName,
+                                LongName, Help, Set, IsFlag, AcceptsMany, DefaultValue, FromEnv, AutoEnv)
     ARG_USER_BOOL_FUNCTION_SAFE(is_flag, IsFlag, true, "Error: don't call is_flag() more than once!", ShortName,
                                 LongName, Help, IsRequired, Set, AcceptsMany, DefaultValue, FromEnv, AutoEnv)
     ARG_USER_BOOL_FUNCTION_SAFE(accepts_many, AcceptsMany, true, "Error: don't call accepts_many() more than once!",
                                 ShortName, LongName, Help, IsRequired, IsFlag, Set, DefaultValue, FromEnv,
                                 AutoEnv)
-    ARG_USER_CUSTOM_FUNCTION_SAFE(default_value, std::string, DefaultValue,
-                                  "Error: don't call default_value() more than once!", ShortName, LongName, Help,
-                                  IsRequired, IsFlag, AcceptsMany, Set, FromEnv, AutoEnv)
+    ARG_USER_CUSTOM_FUNCTION_SAFE_ISNAMED(default_value, std::string, DefaultValue, "Error: don't call default_value() more than once!",
+                                ShortName, LongName, Help, IsRequired, IsFlag, AcceptsMany, Set, FromEnv,
+                                AutoEnv)
     ARG_USER_BOOL_FUNCTION_SAFE(auto_env, AutoEnv, true, "Error: don't call auto_env() more than once!", ShortName,
                                 LongName, Help, IsRequired, IsFlag, AcceptsMany, DefaultValue, FromEnv, Set)
 
     // this is expanded for its different functionality
     [[nodiscard]] inline auto from_env(std::string env_var_name) {
+        static_assert(std ::is_same_v<LongName, Set>, "Error: I need a name! [.long_name(), .short_name()]");
         static_assert(std ::is_same_v<FromEnv, NotSet>, "Error: don't call auto_env() more than once!");
         this->env_name_ = std::move(env_var_name);
         Arg<ShortName, LongName, Help, IsRequired, IsFlag, AcceptsMany, DefaultValue, Set, AutoEnv> next =
