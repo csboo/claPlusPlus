@@ -21,11 +21,7 @@ template <typename ShortName = NotSet, typename LongName = NotSet, typename Help
           typename FromEnv = NotSet, typename AutoEnv = NotSet>
 class Arg final : public BaseArg {
    public:
-    Arg(std::string name) {
-        name_ = std::move(name);
-        long_name_ = name_;
-    }
-
+    Arg() = default;
     ~Arg() override = default;
 
     template<typename SN, typename LN, typename H, typename IR, typename IF,
@@ -84,7 +80,7 @@ class Arg final : public BaseArg {
     friend std::ostream& operator<<(std::ostream& os, const BaseArg& arg);
 
     // ----| Getters & Setters |----
-    DEFINE_GETTER_SETTER_OVERRIDE(name, std::string)
+    // DEFINE_GETTER_SETTER_OVERRIDE(name, std::string)
     DEFINE_GETTER_SETTER_OVERRIDE(short_name, std::string)
     DEFINE_GETTER_SETTER_OVERRIDE(long_name, std::string)
     DEFINE_GETTER_SETTER_OVERRIDE(help, std::string)

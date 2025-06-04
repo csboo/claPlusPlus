@@ -31,7 +31,7 @@ void ClapParser::parse(const int& argc, char* argv[]) {
     for (const auto& arg : args_) {
         // std::cerr << arg << "\n\n\n";
         if (arg->get__is_required() && !arg->has_value()) {
-            throw std::runtime_error("argument '" + arg->get__name() + "' is required");
+            throw std::runtime_error("argument '" + arg->get__long_name() + "' is required");
         }
     }
 }
@@ -99,7 +99,7 @@ void ClapParser::parse_value_for_non_flag(BaseArg* arg, size_t& cli_index, const
             cli_index++;  // Skip the value in the next iteration
         }
     } else {
-        throw std::runtime_error("option '" + arg->get__name() + "' requires a value but none was provided");
+        throw std::runtime_error("option '" + arg->get__long_name() + "' requires a value but none was provided");
     }
 }
 
@@ -117,7 +117,7 @@ void ClapParser::parse_value_for_flag(BaseArg* arg, size_t& cli_index, const std
             cli_index++;
         } else {
             // std::cerr << "WRONG VALUE, throwing\n";
-            throw std::runtime_error("boolean option " + quote(arg->get__name()) + " strictly takes: true|false|1|0 (got: " + args.at(cli_index + 1) + ")");
+            throw std::runtime_error("boolean option " + quote(arg->get__long_name()) + " strictly takes: true|false|1|0 (got: " + args.at(cli_index + 1) + ")");
         }
     } else {
         // std::cerr << "no value for flag, fallback to 1\n";
@@ -160,7 +160,7 @@ void ClapParser::analyze_token(std::string& token, size_t& cli_index, std::vecto
 void ClapParser::check_env() {
     for (auto& arg : args_) {
         if (arg->get__auto_env()) {
-            std::string env_name = this->program_name_ + '_' + arg->get__name();
+            std::string env_name = this->program_name_ + '_' + arg->get__long_name();
             to_upper(env_name);
             auto* value_from_env = std::getenv(env_name.c_str());
             if (value_from_env != nullptr) {
@@ -192,7 +192,7 @@ void ClapParser::print_help() const {
 
     for (const auto& arg : args_) {
         arg->get__short_name().empty() ? std::cout << "      " : std::cout << "  -" << arg->get__short_name() << ", ";
-        std::cout << "--" << arg->get__long_name();
+        arg->get__long_name().empty() ? std::cout << "\t" : std::cout << "--" << arg->get__long_name();
         std::cout << "\t" << arg->get__help();
         if (arg->has_default()) {
             std::cout << " (default: " << arg->get__default_value() << ")";
@@ -201,7 +201,7 @@ void ClapParser::print_help() const {
             std::cout << " [env: " << arg->get__env_name() << "]";
         }
         if (arg->get__auto_env()) {
-            std::string env_name = this->program_name_ + '_' + arg->get__name();
+            std::string env_name = this->program_name_ + '_' + arg->get__long_name();
             to_upper(env_name);
             std::cout << " [def.env: " << env_name << "]";
         }

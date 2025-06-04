@@ -46,7 +46,7 @@ class BaseArg {
         os << "}";
     }
 
-    DEFINE_GETTER_SETTER_VIRTUAL(name, std::string)
+    // DEFINE_GETTER_SETTER_VIRTUAL(name, std::string)
     DEFINE_GETTER_SETTER_VIRTUAL(short_name, std::string)
     DEFINE_GETTER_SETTER_VIRTUAL(long_name, std::string)
     DEFINE_GETTER_SETTER_VIRTUAL(help, std::string)
@@ -69,7 +69,6 @@ class BaseArg {
     [[nodiscard]] virtual bool has_value() const = 0;
 
   protected:
-    std::string name_;
     std::string short_name_;
     std::string long_name_;
     std::string help_;
