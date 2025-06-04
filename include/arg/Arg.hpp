@@ -28,10 +28,6 @@ class Arg final : public BaseArg {
 
     ~Arg() override = default;
 
-    static inline std::unique_ptr<BaseArg> builder(const std::string& name) {
-      return std::make_unique<Arg<>>(name);
-    }
-    
     template<typename SN, typename LN, typename H, typename IR, typename IF,
              typename AM, typename DV, typename FE, typename AE>
     friend class Arg;
@@ -77,18 +73,6 @@ class Arg final : public BaseArg {
 
    private:
     friend class ClapParser;
-
-    // std::string name_;
-    // std::string short_name_;
-    // std::string long_name_;
-    // std::string help_;
-    // bool is_required_;
-    // bool is_flag_;
-    // bool accepts_many_;
-    // std::string env_name_;
-    // bool auto_env_;
-    // std::string default_value_;
-    // std::optional<std::string> value_;
 
     friend std::ostream& operator<<(std::ostream& os, const BaseArg& arg);
 
