@@ -41,6 +41,13 @@ struct Parse<std::string> {
 template <>
 struct Parse<bool> {
     static std::optional<bool> parse(std::string_view s) {
-        return Parse<int>::parse(s);
+        auto value = Parse<int>::parse(s);
+        if (!value.has_value()) {
+            return std::nullopt;
+        }
+        if (value.value() == 0) {
+            return std::optional{ false };
+        }
+        return std::optional{ true };
     }
 };
