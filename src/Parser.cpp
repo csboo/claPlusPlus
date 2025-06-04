@@ -8,7 +8,8 @@
 #include <string>
 #include <vector>
 
-#include "Arg.hpp"
+#include "arg/Arg.hpp"
+#include "arg/BaseArg.hpp"
 #include "utils.hpp"
 
 void ClapParser::parse(const int& argc, char* argv[]) {
@@ -29,34 +30,60 @@ void ClapParser::parse(const int& argc, char* argv[]) {
     // Validate all arguments that need values received them
     for (const auto& arg : args_) {
         // std::cerr << arg << "\n\n\n";
-        if (arg.get__is_required() && !arg.has_value()) {
-            throw std::runtime_error("argument '" + arg.get__name() + "' is required");
+        if (arg->get__is_required() && !arg->has_value()) {
+            throw std::runtime_error("argument '" + arg->get__long_name() + "' is required");
         }
     }
 }
 
-void ClapParser::add_arg(const Arg& arg) { args_.emplace_back(arg); }
+void ClapParser::parse_cli_args(std::vector<std::string>& args) {
+    // std::cerr << "\nstart cli arg parsing\n";
+    // std::cerr << "args vector: [";
+    // for (const auto& i : args) {
+    //     std::cerr << quote(i) << " ";
+    // }
+    // std::cerr << "]\n";
 
-void ClapParser::parse_cli_args(const std::vector<std::string>& args) {
     for (size_t i = 0; i < args.size(); ++i) {
-        const auto& token = args.at(i);
+        std::string token = args.at(i);
+        // std::cerr << "\ngoing through args: size=" << args.size() << ", current token=" << quote(token) << ", index=" << i << "\n";
 
+        // TODO this could be better with string view contains?
         if (token == "--help" || token == "-h") {
             print_help();
             exit(0);
         }
 
-        auto* arg = ok_or_throw_str(ClapParser::find_arg(*this, token), "unknown option: \'" + token);
+        // solve --opt="value" stuff
+        ClapParser::analyze_token(token, i, args);
+        if (token.starts_with("--")) {
+            token = token.substr(2);
+        } else if (token.starts_with("-")) {
+            token = token.substr(1);
+        }
+        // std::cerr << "args vector AGAIN: [";
+        // for (const auto& i : args) {
+            // std::cerr << quote(i) << " ";
+        // }
+        // std::cerr << "]\n";
+
+
+        auto* arg = ok_or_throw_str(ClapParser::find_arg(*this, token), "unknown option: " + quote(token));
 
         if (!arg->get__is_flag()) {
+            // std::cerr << "\nparsing non-flag\n";
             ClapParser::parse_value_for_non_flag(arg, i, args);
         } else {
-            arg->set__value("1");
+            // std::cerr << "\nparsing flag\n";
+            ClapParser::parse_value_for_flag(arg, i, args);
         }
     }
+    // std::cerr << "cli arg parsing done\n";
+    // std::cerr << *this << "\n";
 }
 
-void ClapParser::parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std::vector<std::string>& args) {
+void ClapParser::parse_value_for_non_flag(BaseArg* arg, size_t& cli_index, const std::vector<std::string>& args) {
+    // std::cerr << "\ncli_ind, and arg size: " << cli_index << " " << args.size() << "\n";
     if (cli_index + 1 < args.size() && !is_option(args.at(cli_index + 1))) {
         if (arg->get__accepts_many()) {
             std::string value;
@@ -64,30 +91,86 @@ void ClapParser::parse_value_for_non_flag(Arg* arg, size_t& cli_index, const std
                 value += args.at(cli_index + 1) + ' ';
                 cli_index++;
             }
+            // std::cerr << "value " << value << "\n";
             arg->set__value(value);
         } else {
+            // std::cerr << "value " << args.at(cli_index + 1) << "\n";
             arg->set__value(args.at(cli_index + 1));
             cli_index++;  // Skip the value in the next iteration
         }
     } else {
-        throw std::runtime_error("option '" + arg->get__name() + "' requires a value but none was provided");
+        throw std::runtime_error("option '" + arg->get__long_name() + "' requires a value but none was provided");
+    }
+}
+
+void ClapParser::parse_value_for_flag(BaseArg* arg, size_t& cli_index, const std::vector<std::string>& args) {
+    // std::cerr << "\ncli_ind, and arg size: " << cli_index << " " << args.size() << "\n";
+    if (cli_index + 1 < args.size() && !is_option(args.at(cli_index + 1))) {
+        // std::cerr << "found flag with value in cli value: (";
+        if (args.at(cli_index + 1) == "true" || args.at(cli_index + 1) == "1") {
+            // std::cerr << args.at(cli_index + 1) << ")\n";
+            arg->set__value("1");
+            cli_index++;
+        } else if (args.at(cli_index + 1) == "false" || args.at(cli_index + 1) == "0") {
+            // std::cerr << args.at(cli_index + 1) << ")\n";
+            arg->set__value("0");
+            cli_index++;
+        } else {
+            // std::cerr << "WRONG VALUE, throwing\n";
+            throw std::runtime_error("boolean option " + quote(arg->get__long_name()) + " strictly takes: true|false|1|0 (got: " + args.at(cli_index + 1) + ")");
+        }
+    } else {
+        // std::cerr << "no value for flag, fallback to 1\n";
+        arg->set__value("1");
+    }
+}
+
+void ClapParser::analyze_token(std::string& token, size_t& cli_index, std::vector<std::string>& args) {
+    // std::cerr << "\nstarting token analysis for: " << quote(token) << "\n";
+    // std::cerr << "[WARNING]: might mess up arg vector!\n";
+    if (token.contains('=')) {
+        // std::cerr << "'=' found, separating token ( ";
+        const auto middle = token.find('=');
+
+        std::string token_name = token.substr(0, middle);
+        // std::cerr << "name: " << quote(token_name) << ", ";
+        std::string token_value = token.substr(middle + 1);
+        if (token_value.empty()) {
+            throw std::runtime_error("value not specified after '='");
+        }
+        // std::cerr << "value: " << quote(token_value) << " )\n";
+
+        args.at(cli_index) = token_value;
+        // std::cerr << "TEST: " << cli_index << "\n";
+        cli_index--;
+        
+        // std::cerr << "args vector: [";
+        // for (const auto& i : args) {
+        //     std::cerr << quote(i) << " ";
+        // }
+        // std::cerr << "]\n";
+
+        // std::cerr << "ending token analysis\n";
+        token = token_name;
+    } else {
+        // std::cerr << "ending token analysis, left alone\n";
     }
 }
 
 void ClapParser::check_env() {
     for (auto& arg : args_) {
-        if (arg.get__auto_env()) {
-            std::string env_name = this->program_name_ + '_' + arg.get__name();
+        if (arg->get__auto_env()) {
+            std::string env_name = this->program_name_ + '_' + arg->get__long_name();
             to_upper(env_name);
             auto* value_from_env = std::getenv(env_name.c_str());
             if (value_from_env != nullptr) {
-                arg.set__value(value_from_env);
+                arg->set__value(value_from_env);
             }
         }
-        if (arg.has_env()) {
-            auto* value_from_env = std::getenv(arg.get__env_name().c_str());
+        if (arg->has_env()) {
+            auto* value_from_env = std::getenv(arg->get__env_name().c_str());
             if (value_from_env != nullptr) {
-                arg.set__value(value_from_env);
+                arg->set__value(value_from_env);
             }
         }
     }
@@ -108,45 +191,44 @@ void ClapParser::print_help() const {
     std::cout << "\n\nOptions:\n";
 
     for (const auto& arg : args_) {
-        arg.get__short_name().empty() ? std::cout << "      " : std::cout << "  -" << arg.get__short_name() << ", ";
-        std::cout << "--" << arg.get__long_name();
-        std::cout << "\t" << arg.get__help();
-        if (arg.has_default()) {
-            std::cout << " (default: " << arg.get__default_value() << ")";
+        arg->get__short_name().empty() ? std::cout << "      " : std::cout << "  -" << arg->get__short_name() << ", ";
+        arg->get__long_name().empty() ? std::cout << "\t" : std::cout << "--" << arg->get__long_name();
+        std::cout << "\t" << arg->get__help();
+        if (arg->has_default()) {
+            std::cout << " (default: " << arg->get__default_value() << ")";
         }
-        if (arg.has_env()) {
-            std::cout << " [env: " << arg.get__env_name() << "]";
+        if (arg->has_env()) {
+            std::cout << " [env: " << arg->get__env_name() << "]";
         }
-        if (arg.get__auto_env()) {
-            std::string env_name = this->program_name_ + '_' + arg.get__name();
+        if (arg->get__auto_env()) {
+            std::string env_name = this->program_name_ + '_' + arg->get__long_name();
             to_upper(env_name);
             std::cout << " [def.env: " << env_name << "]";
         }
         std::cout << "\n";
     }
-    std::cout << "  ";
-    std::cout << "-h" << ", ";
-    std::cout << "--help";
-    std::cout << "\t" << "Prints this help message";
-    std::cout << "\n";
+    std::cout << "  " << "-h" << ", " << "--help" << "\t" << "Prints this help message" << "\n";
 }
 
 // Helper methods
-std::optional<Arg*> ClapParser::find_arg(ClapParser& parser, const std::string& arg_name) {
-    auto it = std::ranges::find_if(parser.args_, [&](Arg& arg) {
-        return ("--" + arg.get__long_name() == arg_name || "-" + arg.get__short_name() == arg_name);
+std::optional<BaseArg*> ClapParser::find_arg(ClapParser& parser, const std::string& arg_name) {
+    auto it = std::ranges::find_if(parser.args_, [&](std::unique_ptr<BaseArg>& arg) {
+        return (arg->get__long_name() == arg_name || arg->get__short_name() == arg_name);
     });
 
     if (it == parser.args_.end()) {
         return std::nullopt;
     }
-    return &(*it);
+    return it->get();
 }
 
 void ClapParser::apply_defaults() {
     for (auto& arg : args_) {
-        if (!arg.has_value() && arg.has_default()) {
-            arg.set__value(arg.get__default_value());
+        if (arg->get__is_flag() && !arg->has_default()) {
+            arg->set__default_value("0"); // flags are false by default always
+        }
+        if (!arg->has_value() && arg->has_default()) {
+            arg->set__value(arg->get__default_value());
         }
     }
 }
@@ -161,7 +243,7 @@ void ClapParser::print_parser(std::ostream& os, const ClapParser& parser, int in
     print_indent(os, indent + 1);
     os << "args: [\n";
     for (const auto& arg : parser.args_) {
-        Arg::print_arg(os, arg, indent + 2);
+        arg->print_arg(os, indent + 2);
         os << ",\n";
     }
     print_indent(os, indent + 1);

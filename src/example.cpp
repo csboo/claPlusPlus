@@ -8,18 +8,18 @@ void run(ClapParser& arg_parser);
 
 int main(const int argc, char* argv[]) {
     ClapParser arg_parser;
-    auto num1 = Arg("num1").from_env("ASDF").auto_env().required(true);
+    auto num1 = Arg().long_name("num1").from_env("ASDF").auto_env().is_required();
     // std::cerr << num1 << "\n";
     arg_parser.add_arg(num1);
-    auto num2 = Arg("num2").short_name("N").from_env("TES").default_value("99");
+    auto num2 = Arg().long_name("num2").short_name("N").from_env("TES").default_value("99.0");
     arg_parser.add_arg(num2);
 
-    arg_parser.add_arg(Arg("test").is_flag());
+    arg_parser.add_arg(Arg().long_name("test").is_flag());
     // arg_parser.add_arg(Arg("test").is_flag(true));
 
     try {
         arg_parser.parse(argc, argv);
-        // std::cerr << arg_parser;
+        std::cerr << arg_parser;
         run(arg_parser);
     } catch (const std::exception& e) {
         std::cerr << "\n\n\nerror: " << e.what() << "\n\n\n";

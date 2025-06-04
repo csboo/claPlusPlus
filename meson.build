@@ -10,21 +10,21 @@ project('claplusplus', 'cpp',
 )
 
 # Add include directory for headers
-include_dir = include_directories('include')
+include_dir = include_directories('include', 'include/arg')
 
 # Build executable directly from all necessary sources
 executable('claPlusPlus',
   sources: [
     'src/example.cpp',
-    'src/Arg.cpp',
-    'src/Parser.cpp'
+    'src/Parser.cpp',
+    'src/BaseArg.cpp'
   ],
   include_directories: include_dir,
   install: false
 )
 
 parser_lib = static_library('clap_parser', 
-  sources: ['src/Parser.cpp', 'src/Arg.cpp'],
+  sources: ['src/Parser.cpp', 'src/BaseArg.cpp'],
   include_directories: include_dir,
   install: false
 )
@@ -33,6 +33,8 @@ tests = [
   'test_priority.cpp',
   'test_flag.cpp',
   'test_combo.cpp',
+  'parse_types.cpp',
+  'type_parse_expectedfail.cpp'
 ]
 
 test_bins = []
@@ -85,3 +87,9 @@ test('combo_value_first', test_bins[2],
 test('combo_env_and_manual', test_bins[2],
      args: ['--val', '9'],
      env: ['VAL=4', 'TEST_COMBO_VAL=5', 'EXPECTED_V=9', 'EXPECTED_B=0'])
+   
+# 4) type parse tests
+test('parse_types', test_bins[3])
+
+# 5) type parse tests
+test('parse_types_overflow', test_bins[4])

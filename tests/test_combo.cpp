@@ -10,8 +10,8 @@
 int main(int argc, char* argv[]) {
     ClapParser p;
     // a value arg with full priority stack:
-    auto val = Arg("val").from_env("VAL").auto_env().default_value("10");
-    auto boolean = Arg("flag").is_flag();
+    auto val = Arg().long_name("val").from_env("VAL").auto_env().default_value("10");
+    auto boolean = Arg().long_name("flag").is_flag();
     p.add_arg(val);
     p.add_arg(boolean);
     p.parse(argc, argv);
