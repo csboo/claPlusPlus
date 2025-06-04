@@ -69,7 +69,14 @@ class Arg final : public BaseArg {
     ARG_USER_BOOL_FUNCTION_SAFE(auto_env, AutoEnv, true, "Error: don't call auto_env() more than once!", ShortName,
                                 LongName, Help, IsRequired, IsFlag, AcceptsMany, DefaultValue, FromEnv, Set)
 
-    // ARG_USER_BOOL_FUNCTION_SAFE(from_env, FromEnv, false, "Error: don't call from_env() more than once!")
+    // this is expanded for its different functionality
+    [[nodiscard]] inline auto from_env(std::string env_var_name) {
+        static_assert(std ::is_same_v<FromEnv, NotSet>, "Error: don't call auto_env() more than once!");
+        this->env_name_ = std::move(env_var_name);
+        Arg<ShortName, LongName, Help, IsRequired, IsFlag, AcceptsMany, DefaultValue, Set, AutoEnv> next =
+            std ::move(*this);
+        return next;
+    }
 
    private:
     friend class ClapParser;
