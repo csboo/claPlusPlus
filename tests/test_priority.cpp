@@ -18,7 +18,7 @@
 int main(const int argc, char* argv[]) {
     ClapParser p;
 
-    auto a = Arg("val").from_env("VAL").auto_env().default_value("1");
+    auto a = Arg().long_name("val").from_env("VAL").auto_env().default_value("1");
     p.add_arg(a);
     p.parse(argc, argv);
 

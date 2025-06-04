@@ -2,7 +2,6 @@
 
 #include <charconv>
 #include <cstdint>
-#include <cstdlib>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -20,29 +19,59 @@ concept Parseable = requires(std::string_view s) {
 };
 
 // Integer types
-DEFINE_PARSABLE_BASIC_TYPE(int8_t)
-DEFINE_PARSABLE_BASIC_TYPE(uint8_t)
-DEFINE_PARSABLE_BASIC_TYPE(int16_t)
-DEFINE_PARSABLE_BASIC_TYPE(uint16_t)
-DEFINE_PARSABLE_BASIC_TYPE(int32_t)
-DEFINE_PARSABLE_BASIC_TYPE(uint32_t)
-DEFINE_PARSABLE_BASIC_TYPE(int64_t)
-DEFINE_PARSABLE_BASIC_TYPE(uint64_t)
+DEFINE_PARSABLE_NUM_TYPE(int8_t)
+DEFINE_PARSABLE_NUM_TYPE(uint8_t)
+DEFINE_PARSABLE_NUM_TYPE(int16_t)
+DEFINE_PARSABLE_NUM_TYPE(uint16_t)
+DEFINE_PARSABLE_NUM_TYPE(int32_t)
+DEFINE_PARSABLE_NUM_TYPE(uint32_t)
+DEFINE_PARSABLE_NUM_TYPE(int64_t)
+DEFINE_PARSABLE_NUM_TYPE(uint64_t)
 
 // Floating-point types
-DEFINE_PARSABLE_FLOAT_TYPE(float, std::strtof)
-DEFINE_PARSABLE_FLOAT_TYPE(double, std::strtod)
-DEFINE_PARSABLE_FLOAT_TYPE(long double, std::strtold)
+template <>
+struct Parse<float> {
+    static std ::optional<float> parse(std ::string_view s) {
+        char* end = nullptr;
+        float value = std::strtof(s.data(), &end);
+        if (end == s.data() + s.size()) return value;
+        return std::nullopt;
+    }
+};
+template <>
+struct Parse<double> {
+    static std ::optional<double> parse(std ::string_view s) {
+        char* end = nullptr;
+        double value = std::strtod(s.data(), &end);
+        if (end == s.data() + s.size()) return value;
+        return std::nullopt;
+    }
+};
+template <>
+struct Parse<long double> {
+    static std ::optional<long double> parse(std ::string_view s) {
+        char* end = nullptr;
+        long double value = std::strtold(s.data(), &end);
+        if (end == s.data() + s.size()) return value;
+        return std::nullopt;
+    }
+};
 
 template <>
 struct Parse<std::string> {
-    static std::optional<std::string> parse(std::string_view s) { return std::string(s.data()); }
+    static std::optional<std::string> parse(std::string_view s) { return std::string(s.data(), s.data() + s.size()); }
 };
 
 template <>
 struct Parse<bool> {
     static std::optional<bool> parse(std::string_view s) {
-        auto as_int = Parse<int>::parse(s).value();
-        return as_int;
+        auto value = Parse<int>::parse(s);
+        if (!value.has_value()) {
+            return std::nullopt;
+        }
+        if (value.value() == 0) {
+            return std::optional{ false };
+        }
+        return std::optional{ true };
     }
 };

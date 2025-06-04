@@ -6,13 +6,11 @@
 #include <stdexcept>
 #include <string>
 
-template <typename T, typename E>
-inline T ok_or(std::optional<T> opt, E&& err) {
-    if (!opt) {
-        std::forward<E>(err)();
-    }
-    return *opt;
-}
+// this is really dangerous and broken :D
+// template <typename T, typename E>
+// inline T ok_or(std::optional<T> opt, E&& err) {
+//     return opt.has_value() ? *opt : std::forward<E>(err)();
+// }
 
 template <typename T>
 inline T ok_or_throw_str(std::optional<T> opt, const std::string& err) {
