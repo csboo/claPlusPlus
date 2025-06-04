@@ -207,11 +207,7 @@ void ClapParser::print_help() const {
         }
         std::cout << "\n";
     }
-    std::cout << "  ";
-    std::cout << "-h" << ", ";
-    std::cout << "--help";
-    std::cout << "\t" << "Prints this help message";
-    std::cout << "\n";
+    std::cout << "  " << "-h" << ", " << "--help" << "\t" << "Prints this help message" << "\n";
 }
 
 // Helper methods
