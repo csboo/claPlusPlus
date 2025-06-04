@@ -24,11 +24,10 @@ class ClapParser {
     template <typename T>
         requires Parseable<T>
     std::optional<T> get_one_as(const std::string& name) {
-        auto *arg = ok_or(ClapParser::find_arg(*this, "--" + name), [] { return std::nullopt; });
-        
-        return Parse<T>::parse(
-            ok_or_throw_str(arg->get__value(), "value for option: " + quote(arg->get__name()) + " is missing")
-        );
+        auto *arg = ok_or_throw_str(ClapParser::find_arg(*this, name), "no option with name: " + quote(name) + " was found");
+        auto value = ok_or_throw_str(arg->get__value(), "value for option: " + quote(arg->get__long_name()) + " is missing");
+
+        return Parse<T>::parse(value);
     }
 
     static void print_parser(std::ostream& os, const ClapParser& parser, int indent);
