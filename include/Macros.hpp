@@ -6,7 +6,7 @@
         static std::optional<TYPE> parse(std::string_view s) {                      \
             TYPE value = 0;                                                             \
             auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value); \
-            return ec == std::errc() ? std::nullopt : std::optional{value};         \
+            return ec == std::errc() ? std::optional{value} : std::nullopt;         \
         }                                                                           \
     };
 
@@ -16,7 +16,7 @@
         static std::optional<TYPE> parse(std::string_view s) {                                                     \
             TYPE value = 0;                                                                                            \
             auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value, std::chars_format::scientific); \
-            return ec == std::errc() ? std::nullopt : std::optional{value};                                        \
+            return ec == std::errc() ? std::optional{value} : std::nullopt;                                        \
         }                                                                                                          \
     };
 
