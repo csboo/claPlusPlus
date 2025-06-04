@@ -1,6 +1,6 @@
 #pragma once
 
-#define DEFINE_PARSABLE_INTEGER_TYPE(TYPE)                                          \
+#define DEFINE_PARSABLE_NUM_TYPE(TYPE)                                          \
     template <>                                                                     \
     struct Parse<TYPE> {                                                            \
         static std::optional<TYPE> parse(std::string_view s) {                      \
@@ -10,15 +10,15 @@
         }                                                                           \
     };
 
-#define DEFINE_PARSABLE_FLOAT_TYPE(TYPE)                                                                           \
-    template <>                                                                                                    \
-    struct Parse<TYPE> {                                                                                           \
-        static std::optional<TYPE> parse(std::string_view s) {                                                     \
-            TYPE value = 0;                                                                                            \
-            auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value, std::chars_format::scientific); \
-            return ec == std::errc() ? std::optional{value} : std::nullopt;                                        \
-        }                                                                                                          \
-    };
+// #define DEFINE_PARSABLE_FLOAT_TYPE(TYPE)                                                                           \
+//     template <>                                                                                                    \
+//     struct Parse<TYPE> {                                                                                           \
+//         static std::optional<TYPE> parse(std::string_view s) {                                                     \
+//             TYPE value = 0;                                                                                            \
+//             auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value, std::chars_format::scientific); \
+//             return ec == std::errc() ? std::optional{value} : std::nullopt;                                        \
+//         }                                                                                                          \
+//     };
 
 #define DEFINE_GETTER_SETTER_OVERRIDE(NAME, TYPE)                                           \
     [[nodiscard]] inline const TYPE& get__##NAME() const override { return this->NAME##_; } \
