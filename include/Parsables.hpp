@@ -29,9 +29,33 @@ DEFINE_PARSABLE_NUM_TYPE(int64_t)
 DEFINE_PARSABLE_NUM_TYPE(uint64_t)
 
 // Floating-point types
-DEFINE_PARSABLE_NUM_TYPE(float)
-DEFINE_PARSABLE_NUM_TYPE(double)
-DEFINE_PARSABLE_NUM_TYPE(long double)
+template <>
+struct Parse<float> {
+    static std ::optional<float> parse(std ::string_view s) {
+        char* end = nullptr;
+        float value = std::strtof(s.data(), &end);
+        if (end == s.data() + s.size()) return value;
+        return std::nullopt;
+    }
+};
+template <>
+struct Parse<double> {
+    static std ::optional<double> parse(std ::string_view s) {
+        char* end = nullptr;
+        double value = std::strtod(s.data(), &end);
+        if (end == s.data() + s.size()) return value;
+        return std::nullopt;
+    }
+};
+template <>
+struct Parse<long double> {
+    static std ::optional<long double> parse(std ::string_view s) {
+        char* end = nullptr;
+        long double value = std::strtold(s.data(), &end);
+        if (end == s.data() + s.size()) return value;
+        return std::nullopt;
+    }
+};
 
 template <>
 struct Parse<std::string> {
