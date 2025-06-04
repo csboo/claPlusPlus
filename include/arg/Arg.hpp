@@ -90,39 +90,6 @@ class Arg final : public BaseArg {
     // std::string default_value_;
     // std::optional<std::string> value_;
 
-    void print_arg(std::ostream& os, int indent = 0) const override {
-        print_indent(os, indent);
-        os << "Arg {\n";
-
-        print_indent(os, indent + 1);
-        os << "name: \"" << name_ << "\",\n";
-        print_indent(os, indent + 1);
-        os << "short: \"" << short_name_ << "\",\n";
-        print_indent(os, indent + 1);
-        os << "long: \"" << long_name_ << "\",\n";
-        print_indent(os, indent + 1);
-        os << "help: \"" << help_ << "\",\n";
-        print_indent(os, indent + 1);
-        os << "required: " << std::boolalpha << is_required_ << ",\n";
-        print_indent(os, indent + 1);
-        os << "is_flag: " << std::boolalpha << is_flag_ << ",\n";
-        print_indent(os, indent + 1);
-        os << "accepts_many: " << std::boolalpha << accepts_many_ << ",\n";
-        print_indent(os, indent + 1);
-        os << "default: \"" << default_value_ << "\",\n";
-        print_indent(os, indent + 1);
-        os << "value: ";
-        if (value_) {
-            os << "\"" << value_.value() << "\"";
-        } else {
-            os << "std::nullopt";
-        }
-        os << '\n';
-
-        print_indent(os, indent);
-        os << "}";
-    }
-
     friend std::ostream& operator<<(std::ostream& os, const BaseArg& arg);
 
     // ----| Getters & Setters |----

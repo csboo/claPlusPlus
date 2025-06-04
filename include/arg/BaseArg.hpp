@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Macros.hpp"
+#include "utils.hpp"
 #include <optional>
 #include <string>
 
@@ -10,7 +11,40 @@ class BaseArg {
     BaseArg() = default;
     virtual ~BaseArg();
 
-    virtual void print_arg(std::ostream& os, int indent = 0) const = 0;
+    void print_arg(std::ostream& os, int indent = 0) const {
+        print_indent(os, indent);
+        os << "Arg {\n";
+
+        print_indent(os, indent + 1);
+        os << "short: \"" << short_name_ << "\",\n";
+        print_indent(os, indent + 1);
+        os << "long: \"" << long_name_ << "\",\n";
+        print_indent(os, indent + 1);
+        os << "help: \"" << help_ << "\",\n";
+        print_indent(os, indent + 1);
+        os << "required: " << std::boolalpha << is_required_ << ",\n";
+        print_indent(os, indent + 1);
+        os << "is_flag: " << std::boolalpha << is_flag_ << ",\n";
+        print_indent(os, indent + 1);
+        os << "accepts_many: " << std::boolalpha << accepts_many_ << ",\n";
+        print_indent(os, indent + 1);
+        os << "default: \"" << default_value_ << "\",\n";
+        print_indent(os, indent + 1);
+        os << "auto_env: \"" << std::boolalpha << auto_env_ << "\",\n";
+        print_indent(os, indent + 1);
+        os << "env_name: \"" << env_name_ << "\",\n";
+        print_indent(os, indent + 1);
+        os << "value: ";
+        if (value_) {
+            os << "\"" << value_.value() << "\"";
+        } else {
+            os << "std::nullopt";
+        }
+        os << '\n';
+
+        print_indent(os, indent);
+        os << "}";
+    }
 
     DEFINE_GETTER_SETTER_VIRTUAL(name, std::string)
     DEFINE_GETTER_SETTER_VIRTUAL(short_name, std::string)
